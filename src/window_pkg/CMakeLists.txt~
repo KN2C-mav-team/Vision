@@ -8,6 +8,7 @@ find_package(Qt4 COMPONENTS QtCore QtGui QtNetWork)
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
+include_directories("/home/irse/lib")
 find_package(OpenCV REQUIRED)
 
 set(qt_srcs

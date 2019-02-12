@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC    -shared -Wl,-soname,libinclude_window.so -o devel/lib/libinclude_window.so CMakeFiles/include_window.dir/include_window_automoc.cpp.o 

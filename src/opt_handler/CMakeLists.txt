@@ -4,13 +4,8 @@ project(opt_handler)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTOMOC ON)
 
-set(CMAKE_AUTOMOC ON)
-
-
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Gui)
-#INCLUDE(${QT_USE_FILE})
+find_package(Qt4 COMPONENTS QtCore QtGui QtNetWork)
+INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 link_directories(/usr/include/qt4/QtExtSerialPort)
@@ -21,12 +16,13 @@ find_package (X11 REQUIRED)
  add_compile_options(-std=c++11)
 
 set(qt_srcs
-       src/main.cpp src/capture_webcam.cpp src/optflow.cpp src/plot_opencv.cpp)
+       src/main.cpp src/capture_webcam.cpp src/optflow.cpp)
 set(qt_hdrs
-      include/capture_webcam.h include/optflow.h include/plot_opencv.h)
+      include/capture_webcam.h include/optflow.h)
 
-#qt5_automoc(${qt_srcs})
-QT5_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+qt4_automoc(${qt_srcs})
+QT4_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+
  add_compile_options(-std=c++11)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
@@ -228,14 +224,7 @@ include_directories(
 # catkin_add_nosetests(test)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
-include_directories(${Qt5Core_INCLUDE_DIRS})
 
-# Use the compile definitions defined in the Qt 5 Widgets module
-add_definitions(${Qt5Core_DEFINITIONS})
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
-
-# Use the compile definitions defined in the Qt 5 Widgets module
-add_definitions(${Qt5Widgets_DEFINITIONS})
 add_library(include_opt_handler ${qt_hdrs})
 
 add_executable(opt_handler src/main.cpp ${qt_srcs} ${qt_moc_srcs} ${UIS_HDRS})
@@ -243,12 +232,7 @@ add_executable(opt_handler src/main.cpp ${qt_srcs} ${qt_moc_srcs} ${UIS_HDRS})
 target_link_libraries(opt_handler ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lqextserialport -lpthread)
 add_dependencies(opt_handler opt_handler_generate_messages_cpp)
 
-target_link_libraries(opt_handler Qt5::Core)
-target_link_libraries(${PROJECT_NAME}
-    Qt5::Core
-   # Qt5::Quick
-    Qt5::Widgets     
-)
+target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lpthread)
 add_dependencies(opt_handler ${catkin_EXPORTED_TARGETS})
 
 

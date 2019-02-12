@@ -5,6 +5,8 @@
 #include "capture_webcam.h"
 #include "quad_board.h"
 #include "QThread"
+#include "QDebug"
+#include "QTime"
 #include <opt_handler/opt_Flow.h>
 
 //#define _GRAPH
@@ -35,6 +37,7 @@ public:
     capture_webcam cap;
     ros::NodeHandle opt_fNH;
     ros::Publisher opt_fPub;
+    QTime d;
 
     Mat prevGray, image;
     vector<Point2f> points[2];

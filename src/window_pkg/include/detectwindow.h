@@ -35,9 +35,9 @@ using namespace std;
 #define _FIRST_LEVEL_DILATE 3
 
 #define EROSION_ELEM    0
-#define EROSRION_SIZE   1
+#define EROSRION_SIZE   0
 #define DILATION_ELEM   0
-#define DILATION_SIZE   3
+#define DILATION_SIZE   0
 
 //#define _SHOW_HIST
 #define _ERODE_DILATE_ON
@@ -47,6 +47,10 @@ using namespace std;
 #define _SERIAL_ENABLED
 #define _WIFI_ENABLED
 #define _ELIMINATE_EXTERNAL
+//#define _PRINT_LOG
+
+#define _LAST_POINTS_NUM 2
+//#define  _DRAW_TWO_WINDOWS
 
 
 
@@ -80,7 +84,6 @@ public:
     Point three_windows_center_sorted[3];
     int left_border, right_border, middle;
     int three_windows_x[3];
-    int mean_window_center;
     window_pkg::WinMsg msg;
     ros::Publisher win_pub;
     ros::NodeHandle win_nh;
@@ -91,7 +94,6 @@ public:
     Point origin;
     Rect selection;
     int vmin, vmax, smin;
-
     QDate CurrDate;
     QTime CurrTime;
     VideoWriter CamOut;
@@ -108,7 +110,7 @@ public:
     int sub_mode;
     Rect roi;
     static Mat sub;
-
+    
     Mat erosion_dst, dilation_dst, ERODE_elem, DILATE_elem;
     Mat detectFrame;
 
@@ -117,11 +119,27 @@ public:
     int dilation_elem;
     int dilation_size;
 
-    int side1_y,side2_y,side1_x,side2_x,scale;
+    int side1_y,side2_y,side1_x,side2_x,scale,scale1,scale2;
     int hit_border;
     int inside_polygons;
     //int const max_elem;
     //int const max_kernel_size;
+//recent
+ 
+
+   Point two_windows_center[3];
+    Point two_windows_center_sorted[3];
+     int mean_window_center;
+    int window_center_y;
+    int last_points_detected[3];
+    int last_point_counter;
+    int last_scale;
+bool one_edge_mode;
+bool edge_out_mode;
+int window_index;
+
+    int suggested_point_x;
+
 
 public slots:
     void getImage(Mat raw_image);

@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC    -shared -Wl,-soname,libgtest.so -o libgtest.so CMakeFiles/gtest.dir/src/gtest-all.cc.o CMakeFiles/gtest.dir/gtest_automoc.cpp.o  -L/home/alireza/Desktop/upboard_backup/window_ws/src/build-window_pkg-Desktop-Default/gtest/src -lpthread -Wl,-rpath,/home/alireza/Desktop/upboard_backup/window_ws/src/build-window_pkg-Desktop-Default/gtest/src 

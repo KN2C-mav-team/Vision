@@ -1,0 +1,13 @@
+-I/usr/include/qt4
+-I/usr/include/qt4/QtGui
+-I/usr/include/qt4/QtNetwork
+-I/usr/include/qt4/QtCore
+-I/usr/include/opencv
+-I/usr/include
+-DQT_NO_DEBUG
+-DQT_GUI_LIB
+-DQT_NETWORK_LIB
+-DQT_CORE_LIB
+-o
+/home/alireza/Desktop/upboard_backup/window_ws/src/build-window_pkg-Desktop-Default/include/moc_capture.cxx
+/home/alireza/Desktop/pole_handler_ws/src/window_pkg/include/capture.h
