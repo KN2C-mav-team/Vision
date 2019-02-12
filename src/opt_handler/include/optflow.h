@@ -1,9 +1,9 @@
 #ifndef OPTFLOW_H
 #define OPTFLOW_H
 
-#include <QtExtSerialPort/qextserialport.h>
+//#include <QtExtSerialPort/qextserialport.h>
 #include "capture_webcam.h"
-#include "quad_board.h"
+//#include "quad_board.h"
 #include "QThread"
 #include "QDebug"
 #include "QTime"
@@ -54,8 +54,8 @@ opt_handler::opt_Flow opt_data;
 
     void OptFlow_LK();
 
-private:
-    Quad_Board *transmiter;
+//private:
+    //Quad_Board *transmiter;
 
 public slots:
     void timerEvent(Mat raw_image);

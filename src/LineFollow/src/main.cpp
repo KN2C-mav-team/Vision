@@ -30,7 +30,7 @@ int main( int argc, char* argv[] )
     ros::Subscriber zbarToline = n.subscribe("zbar_data", 1,&Linefollow::zbarCB,&Linefollower);
     QObject::connect(&cap,SIGNAL(imageReady(Mat)),&Linefollower,SLOT(CalcHist(Mat)),Qt::ConnectionType::DirectConnection);
     bgr_image_sub_ = it.subscribe
-            ("/usb_cam_below/image_raw_below",1,&capture::imageCallback,&cap);
+            ("/image_raw",1,&capture::imageCallback,&cap);
 
 
 

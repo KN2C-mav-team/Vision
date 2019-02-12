@@ -12,7 +12,7 @@ void zbar_detect::decode(Mat &im, std::vector<decodedObject> &decodedObjects)
 {
     // Create zbar scanner
        zbar::ImageScanner scanner;
-
+//
        // Configure scanner
        scanner.set_config(ZBAR_NONE, ZBAR_CFG_ENABLE, 1);
 
@@ -36,6 +36,7 @@ void zbar_detect::decode(Mat &im, std::vector<decodedObject> &decodedObjects)
            //if(obj.data == "red")
            msg.data=obj.data;
            zbarPub.publish(msg);
+           waitKey(100);
            ros::shutdown();
 
            // Print type and data
@@ -43,10 +44,10 @@ void zbar_detect::decode(Mat &im, std::vector<decodedObject> &decodedObjects)
            cout << "Data : " << obj.data << endl << endl;
 
            // Obtain location
-//           for(int i = 0; i< symbol->get_location_size(); i++)
-//           {
-//               obj.location.push_back(Point(symbol->get_location_x(i),symbol->get_location_y(i)));
-//           }
+           for(int i = 0; i< symbol->get_location_size(); i++)
+           {
+               obj.location.push_back(Point(symbol->get_location_x(i),symbol->get_location_y(i)));
+           }
 
            decodedObjects.push_back(obj);
        }
@@ -77,7 +78,7 @@ void zbar_detect::display(Mat &im, vector<decodedObject> &decodedObjects)
 
     // Display results
    // imshow("Results", im);
-   // waitKey(2);
+    // waitKey(2);
 }
 
 void zbar_detect::detector(Mat img)
@@ -91,6 +92,6 @@ void zbar_detect::detector(Mat img)
     decode(src, decodedObjects);
 
     // Display location
-  //  display(src, decodedObjects);
+    display(src, decodedObjects);
 
 }

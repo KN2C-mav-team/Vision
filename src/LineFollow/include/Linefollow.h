@@ -17,14 +17,14 @@
 #include "string"
 #include "QTime"
 
-
+///
 //#define Min_Area 4000
 #define EROSION_ELEM    0
 #define EROSRION_SIZE   1
 #define DILATION_ELEM   0
 #define DILATION_SIZE   3
-//#define show_hist
-//#define show_backproj
+#define show_hist
+#define show_backproj
 #define Stop 1
 #define blue 9
 #define red 0
@@ -67,7 +67,7 @@ public:
     bool allowed,begin=false;
     std::vector<std::vector<cv::Point> > contours;
     std::vector<Vec4i> hierarchy;
-    int minArea=1000;
+    int minArea=219;
     int morph_elem = 0;
     int morph_size = 0;
     int morph_operator = 0;
@@ -102,6 +102,7 @@ public:
     double d1,d2;
     bool forward_right=false,forward_left=false;
     void zbarCB(const std_msgs::String &msg );
+    bool firstBegin;
 
 public slots:
     void CalcHist(Mat raw_image);

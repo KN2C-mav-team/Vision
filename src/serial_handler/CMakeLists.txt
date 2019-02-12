@@ -76,9 +76,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   pole.msg 
+   lineMsg.msg 
    opt_Flow.msg
-   WinMsg.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -224,7 +223,7 @@ add_library(include_serial_handler ${qt_hdrs})
 
 add_executable(serial_handler src/main.cpp ${qt_srcs} ${qt_moc_srcs} )
 
-target_link_libraries(serial_handler ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lqextserialport -lpthread)
+target_link_libraries(serial_handler ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lpthread -lqextserialport)
 
 add_dependencies(serial_handler serial_handler_generate_messages_cpp)
 add_dependencies(serial_handler ${catkin_EXPORTED_TARGETS})

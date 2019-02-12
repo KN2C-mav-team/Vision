@@ -1,14 +1,14 @@
 <launch>
-    <arg name="device" default="/dev/video0" />
+    <arg name="device" default="/dev/video1" />
 
     <node name="example_node" pkg="uvc_camera" type="uvc_camera_node" output="screen">
       <remap from="image_raw/compressed" to="example_node/compressed" />
       <param name="device" value="$(arg device)" />
-      <param name="width" value="320" />
-      <param name="height" value="240" />
-      <param name="format" value="yuyv" />
-      <param name="fps" value="125" />
-      <param name="power_line_frequency" value="50"/>
+      <param name="width" value="640" />
+      <param name="height" value="480" />
+      <param name="format" value="jpeg" />
+      <param name="fps" value="121.101" />
+      <param name="power_line_frequency" value="60"/>
       <param name="auto_exposure" value="0" />
       <param name="exposure_absolute" value="75" />
       <param name="exposure_auto_priority" value="0" />

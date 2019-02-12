@@ -25,9 +25,8 @@ int main(int argc, char *argv[])
     mtr1.start(QThread::HighestPriority);
     mtr2.start();
     bgr_image_sub_ = it.subscribe
-            ("/usb_cam_below/image_raw_below",1,&capture_webcam::imageEvent,&cap);
+            ("/image_raw",1,&capture_webcam::imageEvent,&cap);
     QObject::connect(&cap,SIGNAL(imageReady(Mat)),&w,SLOT(timerEvent(Mat)),Qt::ConnectionType::DirectConnection);
-    ROS_WARN("Opt main runs");
     ros::spin();
     return 0;
 }

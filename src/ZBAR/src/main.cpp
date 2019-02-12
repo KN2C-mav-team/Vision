@@ -27,7 +27,7 @@ int main( int argc, char* argv[] )
 
     QObject::connect(&cap,SIGNAL(imageReady(Mat)),&zbar_detector,SLOT(detector(Mat)),Qt::ConnectionType::DirectConnection);
     bgr_image_sub_ = it.subscribe
-            ("/usb_cam_below/image_raw_below",1,&capture::imageCallback,&cap);
+            ("/image_raw",1,&capture::imageCallback,&cap);
 
     ros::spin();
     return 0;

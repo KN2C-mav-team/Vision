@@ -4,15 +4,15 @@ project(LineFollow)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTOMOC ON)
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtNetWork)
-INCLUDE(${QT_USE_FILE})
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui)
 #INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 #link_directories(/usr/include/qt4/QtExtSerialPort)
 
 #include_directories("/home/irse/lib")
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.3 REQUIRED)
 find_package (X11 REQUIRED)
 
 set(qt_srcs
@@ -20,8 +20,7 @@ set(qt_srcs
 set(qt_hdrs
        include/capture.h include/Linefollow.h )
 
-qt4_automoc(${qt_srcs})
-QT4_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+QT5_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -226,14 +225,26 @@ include_directories(
 # catkin_add_nosetests(test)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
+include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
+include_directories(${Qt5Core_INCLUDE_DIRS})
 
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Core_DEFINITIONS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Widgets_DEFINITIONS})
 add_library(include_LineFollow ${qt_hdrs})
 
 
 add_executable(LineFollow src/main.cpp ${qt_srcs} ${qt_moc_srcs} ${UIS_HDRS})
 
-target_link_libraries(LineFollow ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} ${ZBAR_LIBRARIES} zbar -lpthread)
-
+target_link_libraries(LineFollow ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} ${ZBAR_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME}
+    Qt5::Core
+   # Qt5::Quick
+    Qt5::Widgets
+)
 
 add_dependencies(LineFollow LineFollow_generate_messages_cpp)
 add_dependencies(LineFollow ${catkin_EXPORTED_TARGETS})

@@ -22,9 +22,9 @@ Camera::Camera(ros::NodeHandle _comm_nh, ros::NodeHandle _param_nh) :
       info_mgr(_comm_nh, "camera"), cam(0) {
 
       /* default config values */
-      width = 320;
-      height = 240;
-      fps = 125;
+      width = 640;
+      height = 480;
+      fps = 10;
       skip_frames = 0;
       frames_to_skip = 0;
       device = "/dev/video0";
@@ -115,7 +115,6 @@ Camera::Camera(ros::NodeHandle _comm_nh, ros::NodeHandle _param_nh) :
         if (power_line_frequency == 0) {
           val = V4L2_CID_POWER_LINE_FREQUENCY_DISABLED;
         } else if (power_line_frequency == 50) {
-	printf("power_line_frequency=%d .\n", power_line_frequency);
           val = V4L2_CID_POWER_LINE_FREQUENCY_50HZ;
         } else if (power_line_frequency == 60) {
           val = V4L2_CID_POWER_LINE_FREQUENCY_60HZ;

@@ -1,6 +1,0 @@
-int32 setpoint
-int32 setpointy
-int32 flag
-int32 scale
-int32 angle
-int32 upperbound

@@ -1,4 +1,4 @@
- #include "optflow.h"
+#include "optflow.h"
 
 
 
@@ -8,7 +8,7 @@ OptFlow::OptFlow(QObject *parent) : QObject(parent)
     termcrit = TermCriteria(CV_TERMCRIT_ITER|CV_TERMCRIT_EPS, 20, 0.03);
     main_timer = new QTimer(this);
    // connect(main_timer,SIGNAL(timeout()),this,SLOT(timerEvent()));
-    opt_fPub=opt_fNH.advertise<opt_handler::opt_Flow>("opticalFlow_data",1);
+ opt_fPub=opt_fNH.advertise<opt_handler::opt_Flow>("opticalFlow_data",1);
 
     #ifdef _Serial
       //  transmiter = new Quad_Board();
@@ -20,7 +20,7 @@ OptFlow::OptFlow(QObject *parent) : QObject(parent)
 
 void OptFlow::timerEvent(Mat raw_image)
 {
-      //  d.start();
+        d.start();
         raw_image.copyTo(colorframe);
         cvtColor(colorframe, grayframe, CV_BGR2GRAY);
         OptFlow_LK();
@@ -34,7 +34,7 @@ void OptFlow::OptFlow_LK()
 
     if( needToInit )
     {
-        goodFeaturesToTrack(grayframe, points[1], MAX_COUNT, 0.01, 10, Mat(), 3,false, 0.04);
+        goodFeaturesToTrack(grayframe, points[1], MAX_COUNT, 0.01, 10, Mat(), 3, 0,false, 0.04);
         cornerSubPix(grayframe, points[1], subPixWinSize, Size(-1,-1), termcrit);
     }
     else if( !points[0].empty() )
@@ -57,9 +57,9 @@ void OptFlow::OptFlow_LK()
             if( status[i] )
             {
                 points[1][Features_counter++] = points[1][i];
-               // #ifdef _GRAPH
-                   line(colorframe, points[0][i], points[1][i], Scalar(0,255,0), 1, 8, 0);
-                //#endif
+                #ifdef _GRAPH
+                    line(colorframe, points[0][i], points[1][i], Scalar(0,255,0), 1, 8, 0);
+                #endif
                 Point2f p1 = points[0][i], p2 = points[1][i];
                 delta_x += (p1.x - p2.x);
                 delta_y += (p1.y - p2.y);
@@ -78,7 +78,7 @@ void OptFlow::OptFlow_LK()
         opt_data.delta_x=int(delta_x*10);
         opt_data.delta_y=int(delta_y*10);
         opt_fPub.publish(opt_data);
-	ROS_WARN("Data is sent");
+ROS_WARN("Data is sent");
         #endif
 
     }
@@ -90,9 +90,9 @@ void OptFlow::OptFlow_LK()
         needToInit = false;
 
 //#ifdef _GRAPH
-	// imshow("LK Demo", colorframe);
+ //   imshow("LK Demo", colorframe);
 //#endif
-
+std::cout<<"Delay"<< d.elapsed()<<std::endl;
    // waitKey(2);
 
     std::swap(points[1], points[0]);

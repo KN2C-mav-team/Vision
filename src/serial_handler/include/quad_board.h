@@ -5,8 +5,9 @@
 #include <QtExtSerialPort/qextserialport.h>
 //#include <qextserialport.h>
 #include "qdebug.h"
-#include <serial_handler/opt_Flow.h>
-#include <serial_handler/WinMsg.h>
+#include "ros/ros.h"
+#include "serial_handler/opt_Flow.h"
+#include <serial_handler/lineMsg.h>
 
 #define _DEV_SERIAL            "/dev/ttySAC0"
 //"/dev/ttyUSB0"
@@ -56,10 +57,10 @@ public:
     uchar check_Sum;
     QextSerialPort *serial_port;
     ch2int conv;
-    //void poleSerial_CB(const serial_handler::pole &msg);
+    void lineSerial_CB(const serial_handler::lineMsg &msg);
     void optFlow_CB(const serial_handler::opt_Flow &msg);
-    void window_CB(const serial_handler::WinMsg &msg);
-    int load[10]={0,0,0,0,0,0,0,0,0,0};
+  //  void window_CB(const serial_handler::WinMsg &msg);
+    int load[6]={0,0,0,0,0,0};
 
 public slots:
     void readData();

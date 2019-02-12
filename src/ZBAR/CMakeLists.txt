@@ -6,8 +6,10 @@ set (CMAKE_AUTOMOC ON)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtNetWork)
-INCLUDE(${QT_USE_FILE})
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui)
+#INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 find_package(OpenCV REQUIRED)
@@ -20,9 +22,7 @@ set(qt_srcs
 set(qt_hdrs
       include/capture.h include/zbar_detect.h)
 
-
-qt4_automoc(${qt_srcs})
-QT4_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+QT5_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -227,6 +227,14 @@ include_directories(
 
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
+include_directories(${Qt5Core_INCLUDE_DIRS})
+
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Core_DEFINITIONS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Widgets_DEFINITIONS})
 add_library(include_ZBAR ${qt_hdrs})
 
 
@@ -235,6 +243,12 @@ add_executable(zbar_detector src/main.cpp ${qt_srcs} ${qt_moc_srcs} ${UIS_HDRS})
 target_link_libraries(zbar_detector ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} ${ZBAR_LIBRARIES} zbar -lpthread)
 #add_dependencies(opt_handler opt_handler_generate_messages_cpp)
 
+target_link_libraries(zbar_detector Qt5::Core)
+target_link_libraries(zbar_detector
+    Qt5::Core
+   # Qt5::Quick
+    Qt5::Widgets     
+)
 add_dependencies(zbar_detector ${catkin_EXPORTED_TARGETS})
 
 
