@@ -1,35 +1,37 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(serial_handler)
+project(opt_handler)
 
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTOMOC ON)
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtNetWork)
-INCLUDE(${QT_USE_FILE})
+set(CMAKE_AUTOMOC ON)
+
+
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui)
+#INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
+
 link_directories(/usr/include/qt4/QtExtSerialPort)
 
+find_package(OpenCV REQUIRED)
+find_package (X11 REQUIRED)
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+ add_compile_options(-std=c++11)
+
+set(qt_srcs
+       src/main.cpp src/capture_webcam.cpp src/optflow.cpp src/plot_opencv.cpp)
+set(qt_hdrs
+      include/capture_webcam.h include/optflow.h include/plot_opencv.h)
+
+#qt5_automoc(${qt_srcs})
+QT5_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+ add_compile_options(-std=c++11)
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-
-find_package(OpenCV REQUIRED)
-find_package (X11 REQUIRED)
-
-set(qt_srcs
-       src/main.cpp src/quad_board.cpp)
-set(qt_hdrs
-       include/quad_board.h)
-
-qt4_automoc(${qt_srcs})
-QT4_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
-
- add_compile_options(-std=c++11)
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -38,8 +40,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   genmsg
   cv_bridge
-  message_generation
+message_generation
 )
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -76,9 +79,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   pole.msg 
    opt_Flow.msg
-   WinMsg.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -97,8 +98,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
-   DEPENDENCIES
-   std_msgs  
+  DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
  )
 
 ################################################
@@ -126,14 +127,14 @@ find_package(catkin REQUIRED COMPONENTS
 ###################################
 ## The catkin_package macro generates cmake config files for your package
 ## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
+## INCLUDE_DIRS: uncomment this if your package contains header files
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES serial_handler
-   CATKIN_DEPENDS message_runtime
+#  LIBRARIES opt_handler
+CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
@@ -143,30 +144,38 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
 include_directories(
+# include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(serial_handler
-#   src/${PROJECT_NAME}/serial_handler.cpp
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/opt_handler.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(serial_handler ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(serial_handler_node src/serial_handler_node.cpp)
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+# add_executable(${PROJECT_NAME}_node src/opt_handler_node.cpp)
+
+## Rename C++ executable without prefix
+## The above recommended prefix causes long target names, the following renames the
+## target back to the shorter version for ease of user use
+## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
+# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(serial_handler_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(serial_handler_node
+# target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -185,7 +194,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS serial_handler serial_handler_node
+# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -210,7 +219,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_serial_handler.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_opt_handler.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -219,12 +228,27 @@ include_directories(
 # catkin_add_nosetests(test)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
+include_directories(${Qt5Core_INCLUDE_DIRS})
 
-add_library(include_serial_handler ${qt_hdrs})
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Core_DEFINITIONS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
-add_executable(serial_handler src/main.cpp ${qt_srcs} ${qt_moc_srcs} )
+# Use the compile definitions defined in the Qt 5 Widgets module
+add_definitions(${Qt5Widgets_DEFINITIONS})
+add_library(include_opt_handler ${qt_hdrs})
 
-target_link_libraries(serial_handler ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lqextserialport -lpthread)
+add_executable(opt_handler src/main.cpp ${qt_srcs} ${qt_moc_srcs} ${UIS_HDRS})
 
-add_dependencies(serial_handler serial_handler_generate_messages_cpp)
-add_dependencies(serial_handler ${catkin_EXPORTED_TARGETS})
+target_link_libraries(opt_handler ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lqextserialport -lpthread)
+add_dependencies(opt_handler opt_handler_generate_messages_cpp)
+
+target_link_libraries(opt_handler Qt5::Core)
+target_link_libraries(${PROJECT_NAME}
+    Qt5::Core
+   # Qt5::Quick
+    Qt5::Widgets     
+)
+add_dependencies(opt_handler ${catkin_EXPORTED_TARGETS})
+
+

@@ -1,0 +1,10 @@
+<launch>
+
+    <node pkg="usb_cam" name="usb_cam" type="usb_cam_node" /> 
+    <node pkg="usb_cam_below" name="usb_cam_below" type="usb_cam_below_node" /> 
+    <node pkg="opt_handler" name="opt_handler" type="opt_handler" output="screen"/>
+    <node pkg="serial_handler" name="serial_handler" type="serial_handler" output="screen"/>
+    <node pkg="window_pkg" name="window" type="window" output="screen"/> 
+  
+
+</launch>

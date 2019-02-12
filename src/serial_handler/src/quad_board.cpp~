@@ -185,7 +185,7 @@ void Quad_Board::optFlow_CB(const serial_handler::opt_Flow &msg)
    // qDebug()<<"optical!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! = "<<msg.delta_x;
     load[0]=msg.delta_x;
     load[1]=msg.delta_y;
-Fill_Data(10,load[0],load[1],load[2],load[3],load[4],load[5],load[6],load[7],load[8],load[9]);
+Fill_Data(10,load[0],load[1],load[2],load[3],load[4],load[5],load[6],load[7],load[8]);
 
 }
 void Quad_Board::readData()
