@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(raw_image)
+project(kinect)
 
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTOMOC ON)
@@ -9,26 +9,30 @@ INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 find_package(OpenCV REQUIRED)
+find_package (X11 REQUIRED)
 
 set(qt_srcs
-       src/sendimage.cpp src/spin.cpp)
+       src/get_rgb.cpp src/get_depth.cpp)
 set(qt_hdrs
-       include/sendimage.h include/spin.h)
+       include/get_rgb.h include/get_depth.h)
 qt4_automoc(${qt_srcs})
 QT4_WRAP_CPP(qt_moc_srcs ${qt_hdrs})
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  cv_bridge
-  genmsg
-  image_transport
   roscpp
   rospy
-  sensor_msgs
   std_msgs
-  message_generation
+  image_transport
+  sensor_msgs
+  genmsg
+  cv_bridge
+  tf2_msgs
 )
+
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -121,7 +125,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES raw_image
+#  LIBRARIES kinect
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
@@ -138,24 +142,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(raw_image
-#   src/${PROJECT_NAME}/raw_image.cpp
+# add_library(kinect
+#   src/${PROJECT_NAME}/kinect.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(raw_image ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(kinect ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(raw_image_node src/raw_image_node.cpp)
+# add_executable(kinect_node src/kinect_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(raw_image_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(kinect_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(raw_image_node
+# target_link_libraries(kinect_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -174,7 +178,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS raw_image raw_image_node
+# install(TARGETS kinect kinect_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -199,14 +203,18 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_raw_image.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_kinect.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
 include_directories(include ${catkin_INCLUDE_DIRS} ${qt_hdrs})
-add_library(include_send ${qt_hdrs})
-add_executable(raw_image src/main.cpp ${qt_srcs} ${qt_moc_srcs})
-target_link_libraries(raw_image ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lpthread)
+add_library(include ${qt_hdrs})
+add_executable(compress src/image_convert.cpp ${qt_srcs} ${qt_moc_srcs})
+target_link_libraries(compress ${catkin_LIBRARIES} ${OpenCV_LIBS} ${X11_LIBRARIES} ${QT_LIBRARIES} -lpthread)
+add_dependencies(compress kinect_generate_messages_cpp)
+
+

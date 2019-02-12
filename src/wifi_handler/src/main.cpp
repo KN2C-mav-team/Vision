@@ -43,7 +43,7 @@ ros::Subscriber cam_state;
                              &SendImage::imageCB, &send);
     marker_sub = it1.subscribe("Marker_image", 1,
                                &SendImage::marker_image, &send);
-    front_img = it2.subscribe("/front_cam/image_raw", 1,
+    front_img = it2.subscribe("/camera/rgb/image_rect_color", 1,
                                &SendImage::front_image, &send);
     below_img = it3.subscribe("/below_cam/image_raw", 1,
                                &SendImage::below_image, &send);

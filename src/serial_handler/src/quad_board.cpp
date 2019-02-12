@@ -6,6 +6,7 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
     QString portName = QLatin1String(_DEV_SERIAL);
     flight_pub = flight_nh.advertise<std_msgs::Int8>("flight_mode", 1);
     camnum_pub = flight_nh.advertise<std_msgs::Int8>("camnum", 1);
+	kinect_resize_pub = flight_nh.advertise<std_msgs::Int8>("/kinect_resize", 1);
     Turn_back=0;
     serial_port =  new QextSerialPort(QString(portName), QextSerialPort::EventDriven);
     serial_port->close();
@@ -16,7 +17,7 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
     serial_port->setFlowControl(FLOW_OFF);
     serial_port->setDataBits(DATA_8);
     serial_port->setStopBits(STOP_1);
- 
+
     serial_port->setDtr(0);
     serial_port->setRts(0);
 
@@ -120,7 +121,7 @@ qDebug() << "serialllllllllllllllllllll "<<rccc;
 void Quad_Board::windowCB(const serial_handler::WinDetMsgConstPtr &msg)
 {
     //Fill_Data(5,msg->delta_x,msg->delta_y,msg->scale,msg->status,Turn_back);
-    qDebug() << "window: " << msg->delta_x  << msg->delta_y  << "                               " << msg->scale  << msg->status << Turn_back;
+    qDebug() << "window: " << msg->delta_x  << msg->delta_y  << msg->scale  << msg->status << Turn_back;
 
     window_st.delta_x=msg->delta_x;
     window_st.delta_y=msg->delta_y;
@@ -416,6 +417,13 @@ else if(start=="ip")
 qorb>> Ip;
 GS_IP = new QHostAddress(Ip);
 qDebug() << "ipppppppppppppppppppppppppppppppppppppppppppp";
+}
+
+else if(start=="kinect_resize")
+{
+       kinectResize.data=1;
+       kinect_resize_pub.publish(kinectResize);
+qDebug() << "resizeeeeeeeeeeeeeeeeeeeee";
 }
 
     //    orbb.lowc_x=cx & 0xffff;

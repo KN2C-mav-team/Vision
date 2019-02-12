@@ -28,6 +28,7 @@ public:
     ros::NodeHandle flight_nh;
     ros::Publisher flight_pub;
     ros::Publisher camnum_pub;
+ros::Publisher kinect_resize_pub;
     void sendata();
     void depthCB(const serial_handler::depthToSerial &msg);
     int Turn_back;
@@ -74,6 +75,7 @@ public:
      int rccc;
     std_msgs::Int8 flight;
     std_msgs::Int8 cam;
+std_msgs::Int8 kinectResize;
 QString Ip;
 QByteArray start;
 public:

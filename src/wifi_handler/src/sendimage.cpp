@@ -24,7 +24,7 @@ connect(rece,SIGNAL(ip_set()),this,SLOT(Ip_set()),Qt::DirectConnection);
     connect(main_timer,SIGNAL(timeout()),this,SLOT(timerEvent()));
     // connect(spin_timer,SIGNAL(timeout()),this,SLOT(spin_handler()));
     // spin_timer->start(30);
-    main_timer->start(500);
+    main_timer->start(200);
     qDebug() << "send";
     cam=2;
 }
