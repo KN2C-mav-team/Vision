@@ -4,8 +4,8 @@
 #include "Headers/includes.h"
 #include "Headers/LineEquations.h"
 //offset : 500
-#define MINIMUM_RECTANGLE_AREA 260
-#define MAXIMUM_RECTANGLE_AREA 1700
+#define MINIMUM_RECTANGLE_AREA 200
+#define MAXIMUM_RECTANGLE_AREA 1800
 
 using namespace cv;
 using namespace std;
@@ -32,6 +32,7 @@ private:
     void blackThsOut(Mat &);
     void handleBlurs(Mat &);
     void makeOneLine(Mat &);
+    void makeOneLine2(Mat &);
     void publish(const double,const double);
     void selectNeededPoints(vector<Point> &,Mat &);
     void handleRouting(Mat &, Mat &, vector<Point> &);
@@ -45,9 +46,11 @@ private:
     bool checkRect(vector<Point>);
     bool isInsideBlackArea(vector<Point>, Mat & ,
                            vector<vector<Point>>& , vector<Vec4i>& );
+    bool reachedTargetPoint(const Point target);
     string findDirection();
     Mat findWhiteContours(Mat &, Mat & ,Mat&);
     Point handleFinalPoints(vector<Point>&);
+    QTime time;
 
     bool detected_qr;
     bool lock_qr;
@@ -71,10 +74,12 @@ private:
     Point rotationTarget;
     Point rotationBase;
     Point image_center;
+    Point qr_center;
     vector<Point> saved_points;
     vector<Point> qr_rect;
     vector<Point> selectedRotationPoints;
     vector<Point2f> optical_old_points;
+    vector<Point> final_found_points;
     Mat old_frame;
     ros::Publisher publisher;
 };
