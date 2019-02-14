@@ -42,11 +42,15 @@ private:
     void connectPoints(Mat& ,vector<Point> &);
     void takeNewDirections();
     void setAngel(Point ,Point);
+    void choosePoints(vector<vector<Point>>contours, vector<Vec4i>,
+                      vector<Point>&, Mat &);
     bool computeBlackArea(vector <Point> ,Mat );
     bool checkRect(vector<Point>);
     bool isInsideBlackArea(vector<Point>, Mat & ,
                            vector<vector<Point>>& , vector<Vec4i>& );
     bool reachedTargetPoint(const Point target);
+    bool detectedLeftLines(const vector<Point>);
+    bool detectedRightLines(const vector<Point>);
     string findDirection();
     Mat findWhiteContours(Mat &, Mat & ,Mat&);
     Point handleFinalPoints(vector<Point>&);
