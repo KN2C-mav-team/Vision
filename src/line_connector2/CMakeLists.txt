@@ -22,10 +22,10 @@ find_package (X11 REQUIRED)
 add_compile_options(-std=c++11)
 
 set(qt_srcs
-       src/main.cpp src/ProgramHandeler.cpp src/WhiteDetector.cpp src/inverter.cpp src/LineEquations.cpp)
+       src/main.cpp src/ProgramHandeler.cpp src/inverter.cpp src/LineEquations.cpp)
 
 set(qt_hdrs
-        Headers/ProgramHandeler.h Headers/includes.h Headers/WhiteDetector.h Headers/inverter.h Headers/LineEquations.h)
+        Headers/ProgramHandeler.h Headers/includes.h Headers/inverter.h Headers/LineEquations.h)
 
 #qt5_automoc(${qt_srcs})
 QT5_WRAP_CPP(qt_moc_srcs ${qt_hdrs})

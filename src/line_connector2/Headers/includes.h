@@ -16,7 +16,6 @@
 #include <string.h>
 #include <qmath.h>
 #include <zbar.h>
-#include "Headers/WhiteDetector.h"
 #include "Headers/ProgramHandeler.h"
 #include "Headers/inverter.h"
 #include "Headers/LineEquations.h"

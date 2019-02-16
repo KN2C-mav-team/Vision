@@ -35,3 +35,17 @@ double LineEquations::point_length(Point i1,Point i2){
                   (i1.y - i2.y) * (i1.y - i2.y)
                   ));
 }
+
+
+Point LineEquations::findMeanPoint(const vector<Point> points){
+    Point mean;
+    int mean_x = 0;
+    int mean_y = 0;
+    for(int i=0;i<points.size();i++){
+        mean_x += points[i].x;
+        mean_y += points[i].y;
+    }
+    mean.x =  mean_x / points.size();
+    mean.y =  mean_y / points.size();
+    return mean;
+}

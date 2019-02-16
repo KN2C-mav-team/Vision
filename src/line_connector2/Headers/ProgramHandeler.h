@@ -3,9 +3,20 @@
 
 #include "Headers/includes.h"
 #include "Headers/LineEquations.h"
-//offset : 500
 #define MINIMUM_RECTANGLE_AREA 200
 #define MAXIMUM_RECTANGLE_AREA 1800
+#define QUAD_STARTING_DIRECTION "N"
+#define MAX_SCALAR 255
+#define MAX_EPSILON 20
+#define MAX_ERODE 10
+#define MAX_DILATE 10
+#define STARTING_ERODE 0
+#define STARTING_DILATE 1
+#define NORTH "N"
+#define SOUTH "S"
+#define EAST "E"
+#define WEST "W"
+
 
 using namespace cv;
 using namespace std;
@@ -32,7 +43,6 @@ private:
     void blackThsOut(Mat &);
     void handleBlurs(Mat &);
     void makeOneLine(Mat &);
-    void makeOneLine2(Mat &);
     void publish(const double,const double);
     void selectNeededPoints(vector<Point> &,Mat &);
     void handleRouting(Mat &, Mat &, vector<Point> &);
@@ -49,8 +59,7 @@ private:
     bool isInsideBlackArea(vector<Point>, Mat & ,
                            vector<vector<Point>>& , vector<Vec4i>& );
     bool reachedTargetPoint(const Point target);
-    bool detectedLeftLines(const vector<Point>);
-    bool detectedRightLines(const vector<Point>);
+    bool detectedLinesOf(string , const vector<Point>);
     string findDirection();
     Mat findWhiteContours(Mat &, Mat & ,Mat&);
     Point handleFinalPoints(vector<Point>&);

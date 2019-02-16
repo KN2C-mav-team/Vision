@@ -7,32 +7,32 @@ ProgramHandeler::ProgramHandeler()
     namedWindow(WINDOW,WINDOW_AUTOSIZE);
     publisher = nh_.advertise<line_connector2::my_msg>("line_connector2/datas",1000);
     //intial this
-    quad_current_direction = "N";
+    quad_current_direction = QUAD_STARTING_DIRECTION;
     lock_qr = false;
     detected_qr = false;
     lock_points = false;
     optical_flow_lock = false;
     rotation_initiated = false;
     epsilon = 5;
-    erode_factor = 0;
-    dilate_factor = 1;
-    max_L = 255;min_L = 90;
-    max_H = 255;min_H = 0;
-    max_S = 255;min_S = 0;
-    black_max_L = 255;black_min_L = 172;
-    black_max_H = 255;black_min_H = 0;
-    black_max_S = 255;black_min_S = 0;
-    createTrackbar("erode",WINDOW,&erode_factor,10);
-    createTrackbar("dilate",WINDOW,&dilate_factor,10);
-    createTrackbar("max_L",WINDOW,&max_L,255);
-    createTrackbar("min_L",WINDOW,&min_L,255);
-    createTrackbar("black_max_L",WINDOW,&black_max_L,255);
-    createTrackbar("black_min_L",WINDOW,&black_min_L,255);
-    createTrackbar("epsilon",WINDOW,&epsilon,20);
-    //    createTrackbar("min_H",WINDOW,&min_H,255);
-    //    createTrackbar("min_S",WINDOW,&min_S,255);
-    //    createTrackbar("max_H",WINDOW,&max_H,255);
-    //    createTrackbar("max_S",WINDOW,&max_S,255);
+    erode_factor = STARTING_ERODE;
+    dilate_factor = STARTING_DILATE;
+    max_L = MAX_SCALAR;min_L = 90;
+    max_H = MAX_SCALAR;min_H = 0;
+    max_S = MAX_SCALAR;min_S = 0;
+    black_max_L = MAX_SCALAR;black_min_L = 172;
+    black_max_H = MAX_SCALAR;black_min_H = 0;
+    black_max_S = MAX_SCALAR;black_min_S = 0;
+    createTrackbar("erode",WINDOW,&erode_factor,MAX_ERODE);
+    createTrackbar("dilate",WINDOW,&dilate_factor,MAX_DILATE);
+    createTrackbar("max_L",WINDOW,&max_L,MAX_SCALAR);
+    createTrackbar("min_L",WINDOW,&min_L,MAX_SCALAR);
+    //    createTrackbar("black_max_L",WINDOW,&black_max_L,MAX_SCALAR);
+    //    createTrackbar("black_min_L",WINDOW,&black_min_L,MAX_SCALAR);
+    createTrackbar("epsilon",WINDOW,&epsilon,MAX_EPSILON);
+    //    createTrackbar("min_H",WINDOW,&min_H,MAX_SCALAR);
+    //    createTrackbar("min_S",WINDOW,&min_S,MAX_SCALAR);
+    //    createTrackbar("max_H",WINDOW,&max_H,MAX_SCALAR);
+    //    createTrackbar("max_S",WINDOW,&max_S,MAX_SCALAR);
 }
 
 ProgramHandeler::~ProgramHandeler(){
@@ -52,15 +52,8 @@ void ProgramHandeler::Callback(const line_connector2::qr_msg::ConstPtr& msg){
                 p.y = msg ->qr_points[i].y;
                 qr_rect.push_back(p);
             }
-            qr_center = Point((qr_rect[0].x+
-                              qr_rect[1].x+
-                    qr_rect[2].x+
-                    qr_rect[3].x)/4
-                    ,
-                    (qr_rect[0].y+
-                    qr_rect[1].y+
-                    qr_rect[2].y+
-                    qr_rect[3].x)/4);
+            LineEquations eq;
+            qr_center = eq.findMeanPoint(qr_rect);
             // cout<<"connector node says : qr type = "<< msg -> type<<endl;
             //            cout<<"connector node says : qr data = "<< qr_data <<endl;
             //            cout<<"current direction : "<<quad_current_direction <<endl;
@@ -87,18 +80,18 @@ void ProgramHandeler::Callback(const line_connector2::qr_msg::ConstPtr& msg){
 
 string ProgramHandeler::findDirection(){
     string output = "not_intialaized";
-    if(quad_current_direction == "N"){
+    if(quad_current_direction == NORTH){
 
-        if(qr_data == "E"){
+        if(qr_data == EAST){
             output = "right";
             return output;
-        } else if(qr_data == "N"){
+        } else if(qr_data == NORTH){
             output = "forward";
             return output;
-        } else if(qr_data == "W"){
+        } else if(qr_data == WEST){
             output = "left";
             return output;
-        } else if(qr_data == "S"){
+        } else if(qr_data == SOUTH){
             output = "backward";
             return output;
         } else {
@@ -106,17 +99,17 @@ string ProgramHandeler::findDirection(){
             return output;
         }
 
-    } else if(quad_current_direction == "E"){
-        if(qr_data == "E"){
+    } else if(quad_current_direction == EAST){
+        if(qr_data == EAST){
             output = "forward";
             return output;
-        } else if(qr_data == "N"){
+        } else if(qr_data == NORTH){
             output = "left";
             return output;
-        } else if(qr_data == "W"){
+        } else if(qr_data == WEST){
             output = "backward";
             return output;
-        } else if(qr_data == "S"){
+        } else if(qr_data == SOUTH){
             output = "right";
             return output;
         } else {
@@ -124,17 +117,17 @@ string ProgramHandeler::findDirection(){
             return output;
         }
 
-    } else if(quad_current_direction == "W"){
-        if(qr_data == "E"){
+    } else if(quad_current_direction == WEST){
+        if(qr_data == EAST){
             output = "backward";
             return output;
-        } else if(qr_data == "N"){
+        } else if(qr_data == NORTH){
             output = "right";
             return output;
-        } else if(qr_data == "W"){
+        } else if(qr_data == WEST){
             output = "forward";
             return output;
-        } else if(qr_data == "S"){
+        } else if(qr_data == SOUTH){
             output = "left";
             return output;
         } else {
@@ -142,17 +135,17 @@ string ProgramHandeler::findDirection(){
             return output;
         }
 
-    } else if(quad_current_direction == "S"){
-        if(qr_data == "E"){
+    } else if(quad_current_direction == SOUTH){
+        if(qr_data == EAST){
             output = "left";
             return output;
-        } else if(qr_data == "N"){
+        } else if(qr_data == NORTH){
             output = "backward";
             return output;
-        } else if(qr_data == "W"){
+        } else if(qr_data == WEST){
             output = "right";
             return output;
-        } else if(qr_data == "S"){
+        } else if(qr_data == SOUTH){
             output = "forward";
             return output;
         } else {
@@ -230,78 +223,46 @@ void ProgramHandeler::makeOneLine(Mat &oneLineInput){
     LineEquations eq;
     vector<Vec4i> hierarchy;
     vector<vector<Point>> contours,approx;
-    bool point_found = false;
-    inRange(oneLineInput,Scalar(250,250,250),Scalar(255,255,255),oneLineInput);
+   // bool point_found = false;
+    inRange(oneLineInput,Scalar(MAX_SCALAR - 5,MAX_SCALAR - 5,MAX_SCALAR - 5),
+            Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),oneLineInput);
     findContours(oneLineInput,contours,hierarchy,CV_RETR_TREE,CV_CHAIN_APPROX_SIMPLE,Point(0,0));
     approx.resize(contours.size());
-    if(contours.size() == 1){
-        if(contours[0].size() < 20){
-            point_found = false;//intentional
-        }
-    }
+    //    if(contours.size() == 1){
+    //        if(contours[0].size() < 20){
+    //            point_found = true;//intentional
+    //        }
+    //    }
     for(int i=0; i<contours.size();i++){
         approxPolyDP(contours[i], approx[i], (double)epsilon, true);
     }
     for(int i=0;i<approx.size();i++){
         for(int j=0;j<approx[i].size();j++){
-            circle(oneLineInput,approx[i][j],6,Scalar(255,0,0),CV_FILLED,8,0);
+            circle(oneLineInput,approx[i][j],6,Scalar(MAX_SCALAR,0,0),CV_FILLED,8,0);
         }
     }
-    circle(oneLineInput,image_center,5,Scalar(255,0,0),CV_FILLED,5,0);
+    circle(oneLineInput,image_center,5,Scalar(MAX_SCALAR,0,0),CV_FILLED,5,0);
     if(approx.size()>0){
         Point col;
-        if(!point_found){
-            col = handleFinalPoints(approx[0]);
-        } else {
-            Point p = contours[0][0];
-            col = p;
-        }
+        col = handleFinalPoints(approx[0]);
+        //        if(!point_found){
+        //            col = handleFinalPoints(approx[0]);
+        //        } else {
+        //            Point p = contours[0][0];
+        //            col = p;
+        //        }
         if(col.x<10000 && col.x > -10 &&
                 col.y<10000 && col.y > -10){
-            circle(oneLineInput,col,10,Scalar(255,255,255),1,8);
-            line(oneLineInput,col,image_center,Scalar(255,255,255),1,8);
+            circle(oneLineInput,col,10,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),1,8);
+            line(oneLineInput,col,image_center,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),1,8);
             if(col.x > image_center.x){
                 dist = eq.point_length(image_center, col);
             } else {
                 dist =-eq.point_length(image_center, col);
             }
             //     qDebug()<<"polar distance from center"<<dist<<"px";
-            //            double delta_y =-(approx[0][0].y - approx[0][1].y);
-            //            double delta_x = (approx[0][0].x - approx[0][1].x);
-            //            ang = qAtan( (delta_x) / (delta_y) ) * 180/M_PI;
             setAngel(approx[0][0],approx[0][1]);
-            qDebug()<<"arc-tan of detected line"<< ang << "degrees";
-            publish(dist,ang);
-        }
-    }
-}
-
-void ProgramHandeler::makeOneLine2(Mat &empty_mat){
-    //TODO:clean this
-    LineEquations eq;
-    line(empty_mat,final_found_points[0],final_found_points[1],Scalar(255,255,255),1,8);
-    for(int i=0;i<final_found_points.size();i++){
-        circle(empty_mat, final_found_points[i],10,Scalar(255,255,255),CV_FILLED,2);
-    }
-    circle(empty_mat,image_center,5,Scalar(255,0,0),CV_FILLED,5,0);
-    if(final_found_points.size()>0){
-        Point col;
-        col = handleFinalPoints(final_found_points);
-        if(col.x<10000 && col.x > -10 &&
-                col.y<10000 && col.y > -10){
-            circle(empty_mat,col,10,Scalar(255,255,255),1,8);
-            line(empty_mat,col,image_center,Scalar(255,255,255),1,8);
-            if(col.x > image_center.x){
-                dist = eq.point_length(image_center, col);
-            } else {
-                dist =-eq.point_length(image_center, col);
-            }
-            //     qDebug()<<"polar distance from center"<<dist<<"px";
-            //            double delta_y =-(approx[0][0].y - approx[0][1].y);
-            //            double delta_x = (approx[0][0].x - approx[0][1].x);
-            //            ang = qAtan( (delta_x) / (delta_y) ) * 180/M_PI;
-            setAngel(final_found_points[0],final_found_points[1]);
-            qDebug()<<"arc-tan of detected line"<< ang << "degrees";
+            //     qDebug()<<"arc-tan of detected line"<< ang << "degrees";
             publish(dist,ang);
         }
     }
@@ -338,7 +299,7 @@ Mat ProgramHandeler::findWhiteContours(Mat &white_input , Mat &blkThs, Mat &blac
             return a.y > b.y;
         });
         for(int i=0;i<found_points.size();i++){
-            putText(drawing,std::to_string(i),found_points[i],1,2,Scalar(255,255,0),1,8);
+            putText(drawing,std::to_string(i),found_points[i],1,2,Scalar(MAX_SCALAR,MAX_SCALAR,0),1,8);
         }
         final_found_points.clear();
         handleRouting(drawing, final_drawing, found_points);
@@ -349,10 +310,9 @@ Mat ProgramHandeler::findWhiteContours(Mat &white_input , Mat &blkThs, Mat &blac
 
 void ProgramHandeler::choosePoints(vector<vector<Point>>contours ,vector<Vec4i> hierarchy,
                                    vector<Point>&found_points, Mat &drawing){
-
+    LineEquations eq;
     vector<vector<Point>> approx;
     approx.resize(contours.size());
-
     for(int i=0;i < contours.size();i++){
         if(hierarchy[i][2]<0){
             if (contourArea(contours[i])<MAXIMUM_RECTANGLE_AREA
@@ -362,29 +322,19 @@ void ProgramHandeler::choosePoints(vector<vector<Point>>contours ,vector<Vec4i> 
                     return a.y >= b.y;
                 });
 
-                if((approx[i].size() == 4 && checkRect(approx[i]))
+                if((approx[i].size() < 9 && checkRect(approx[i]))
                         /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
-                                                                                                  blackHierarchy) */){
+                                                                                              blackHierarchy) */){
                     for(int j=0;j<4;j++){
-                        circle(drawing,approx[i][j],4,Scalar(255,255,0),-1,3);
+                        circle(drawing,approx[i][j],4,Scalar(MAX_SCALAR,MAX_SCALAR,0),-1,3);
                     }
-                    found_points.push_back(Point(
-                                               (approx[i][0].x +
-                                               approx[i][1].x +
-                                           approx[i][2].x +
-                            approx[i][3].x)/4 ,
-                            (approx[i][0].y +
-                            approx[i][1].y +
-                            approx[i][2].y +
-                            approx[i][3].y)/4
-                            ));
+                    found_points.push_back(eq.findMeanPoint(approx[i]));
                 }
             }
         }
     }
     for(int i=0;i < found_points.size();i++){
-        circle(drawing,found_points[i],2,Scalar(255,255,255),CV_FILLED,8);
-        //circle(final_drawing,found_points[i],3,Scalar(255,255,255),CV_FILLED,8);
+        circle(drawing,found_points[i],2,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),CV_FILLED,8);
     }
 }
 
@@ -392,18 +342,16 @@ bool ProgramHandeler::checkRect(vector<Point> input){
     sort(input.begin(),input.end() , [] (Point a,Point b){
         return a.y >= b.y;
     });
+    if(input.size() > 8){
+        return false;
+    }
     LineEquations eq;
     double x1 = eq.point_length(input[0],input[2]);
     double y1 = eq.point_length(input[1],input[3]);
     double x2 = eq.point_length(input[0],input[1]);
     double y2 = eq.point_length(input[2],input[3]);
-    if(input.size() != 4){
-        return false;
-    }
-    //    qDebug()<<"width = "<<abs(x1 - y1);
-    //    qDebug()<<"height = "<<abs(x2 - y2);
-    if( (abs(x1 - y1) < 7 )&& ( abs(x2 - y2) < 7) /*&&
-                                                 abs((abs(x1 - y1) - abs(x2 - y2))) > 1*/){
+
+    if( (abs(x1 - y1) < 7 )&& ( abs(x2 - y2) < 7) ){
         return true;
     }
 
@@ -418,24 +366,16 @@ bool ProgramHandeler::isInsideBlackArea(vector<Point> points, Mat &blackDr,
     if(points.size() != 4){
         return false;
     }
-    Point center = Point(
-                (points[0].x +
-                points[1].x +
-            points[2].x +
-            points[3].x )/4 ,
-            (points[0].y +
-            points[1].y +
-            points[2].y +
-            points[3].y )/4
-            );
+    LineEquations eq;
+    Point center = eq.findMeanPoint(points);
 
     for(int i=0;i<blackCn.size();i++){
         for(int i=0;i<4;i++){
-            circle(blackDr,points[i],5,Scalar(255,0,0),-1,2);
+            circle(blackDr,points[i],5,Scalar(MAX_SCALAR,0,0),-1,2);
         }
         if( pointPolygonTest(blackCn[i],center,false) == 1){
             drawContours(blackDr,
-                         blackCn,i,Scalar(0,0,255),1,8,blackHi,0,Point());
+                         blackCn,i,Scalar(0,0,MAX_SCALAR),1,8,blackHi,0,Point());
             circle(blackDr,image_center,5,Scalar(0,0,100),-1,3);
             if( contourArea(blackCn[i]) < 12000 ){
                 // qDebug()<<"unwanted contour with area"<<contourArea(blackCn[i]);
@@ -446,7 +386,7 @@ bool ProgramHandeler::isInsideBlackArea(vector<Point> points, Mat &blackDr,
         }
         if( pointPolygonTest(blackCn[i],image_center,false) == 1){
             drawContours(blackDr,
-                         blackCn,i,Scalar(255,255,255),1,8,blackHi,0,Point());
+                         blackCn,i,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),1,8,blackHi,0,Point());
             circle(blackDr,image_center,5,Scalar(0,100,100),-1,3);
             qDebug()<<"center contour area"<<contourArea(blackCn[i]);
         }
@@ -459,7 +399,6 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
     if(!detected_qr){//straigh forward
         selectUpAndDownPoints(points);
         connectPoints(comp_drawing, points);
-        //connectPoints(fin_drawing, points);
         final_found_points.push_back(points[0]);
         final_found_points.push_back(points.back());
         connectPoints(fin_drawing, final_found_points);
@@ -468,13 +407,13 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
         //find the current direction
         string qr_dir = findDirection();
         if(qr_dir == "right"){
-            if(detectedRightLines(points)){
+            if(detectedLinesOf("right",points)){
                 selectRightAndDownPoints(points);
                 setAngel(points[0],points[1]);
                 if((!reachedTargetPoint(rotationTarget))){
                     lock_qr = true;
-                    circle(comp_drawing,rotationTarget,10,Scalar(255,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x - 60,rotationBase.y - 60),10,Scalar(0,255,0),3,5);
+                    circle(comp_drawing,Point(rotationTarget.x + 20, rotationTarget.y),10,Scalar(MAX_SCALAR,0,0),3,5);
+                    circle(comp_drawing,Point(rotationBase.x - 65,rotationBase.y - 80),10,Scalar(0,MAX_SCALAR,0),3,5);
                 } else {
                     //take the new direction
                     takeNewDirections();
@@ -482,7 +421,6 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
                     lock_qr = false;
                 }
                 connectPoints(comp_drawing, points);
-                //connectPoints(fin_drawing, points);
                 final_found_points.push_back(points[0]);
                 final_found_points.push_back(points.back());
                 connectPoints(fin_drawing, final_found_points);
@@ -491,13 +429,13 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
         }
 
         if(qr_dir == "left"){
-            if(detectedLeftLines(points)){
+            if(detectedLinesOf("left",points)){
                 selectLeftAndDownPoints(points);
                 setAngel(points[0],points[1]);
                 if((!reachedTargetPoint(rotationTarget)) ){
                     lock_qr = true;
-                    circle(comp_drawing,rotationTarget,10,Scalar(255,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x + 60,rotationBase.y - 60),10,Scalar(0,255,0),3,5);
+                    circle(comp_drawing,Point(rotationTarget.x - 20, rotationTarget.y),10,Scalar(MAX_SCALAR,0,0),3,5);
+                    circle(comp_drawing,Point(rotationBase.x + 65,rotationBase.y - 80),10,Scalar(0,MAX_SCALAR,0),3,5);
                 } else {
                     //take the new direction
                     takeNewDirections();
@@ -513,10 +451,9 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
 
         if(qr_dir == "forward"){
             points[0] = qr_center;
-            circle(comp_drawing,Point(points[0].x,points[0].y-30),10,Scalar(0,255,0),3,5);
+            circle(comp_drawing,Point(points[0].x,points[0].y-30),10,Scalar(0,MAX_SCALAR,0),3,5);
             selectUpAndDownPoints(points);
             connectPoints(comp_drawing, points);
-            //connectPoints(fin_drawing, points);
             final_found_points.push_back(Point(points[0].x,points[0].y-30));
             final_found_points.push_back(points.back());
             connectPoints(fin_drawing, final_found_points);
@@ -525,25 +462,24 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
     }
 }
 
-bool ProgramHandeler::detectedLeftLines(const vector<Point>points){
-
-    for(int i=0;i<points.size();i++){
-        if(points[i].x < 140){
-            return true;
+bool ProgramHandeler::detectedLinesOf(string dir, const vector<Point> points){
+    if(dir == "left"){
+        for(int i=0;i<points.size();i++){
+            if(points[i].x < 140){
+                return true;
+            }
         }
-    }
-    return false;
-}
-
-bool ProgramHandeler::detectedRightLines(const vector<Point>points){
-
-    for(int i=0;i<points.size();i++){
-        if(points[i].x > 190){
-            return true;
+        return false;
+    } else if (dir == "right"){
+        for(int i=0;i<points.size();i++){
+            if(points[i].x > 190){
+                return true;
+            }
         }
-    }
-    return false;
+        return false;
 
+
+    }
 }
 
 bool ProgramHandeler::reachedTargetPoint(const Point target){
@@ -567,7 +503,7 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
                 farRightPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(farRightPoint);
+        selectedRotationPoints.push_back(Point(farRightPoint.x + 20 , farRightPoint.y));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -576,17 +512,17 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
         vector<Point>finalSelected;
         finalSelected.clear();
         for(int i=0;i<points.size();i++){
-            if(eq.point_length(selectedRotationPoints[1],points[i]) < 40){
+            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x + 20 ,points[i].y)) < 45){
                 rotationTarget = points[i];
             }
-            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x - 60 ,points[i].y - 60)) < 40){
+            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x - 60 ,points[i].y - 60)) < 45){
                 rotationBase = points[i];
             }
         }
-        selectedRotationPoints[1] = rotationTarget;
+        selectedRotationPoints[1] = Point(rotationTarget.x + 20, rotationTarget.y);
         selectedRotationPoints[0] = Point(rotationBase.x - 60,rotationBase.y - 60);
         points.clear();
-        points.push_back(rotationTarget);
+        points.push_back(Point(rotationTarget.x + 20, rotationTarget.y));
         points.push_back(Point(rotationBase.x - 60,rotationBase.y - 60));
     }
 }
@@ -596,14 +532,13 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
         Point farLeftPoint;
         farLeftPoint = points[0];
         selectedRotationPoints.clear();
-        //Point(rotationBase.x,rotationBase.y - 50)
-        selectedRotationPoints.push_back(Point(points[0].x + 60 , points[0].y - 60));
+        selectedRotationPoints.push_back(Point(points[0].x + 65 , points[0].y - 80));
         for(int i=1;i<points.size();i++){
             if( points[i].x < farLeftPoint .x)  {
                 farLeftPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(farLeftPoint);
+        selectedRotationPoints.push_back(Point(farLeftPoint.x - 20 , farLeftPoint.y));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -612,18 +547,18 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
         vector<Point> finalSelected;
         finalSelected.clear();
         for(int i=0;i<points.size();i++){
-            if(eq.point_length(selectedRotationPoints[1],points[i]) < 40){
+            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x - 20 ,points[i].y)) < 50){
                 rotationTarget = points[i];
             }
-            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x + 60 ,points[i].y - 60)) < 40){
+            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x + 65 ,points[i].y - 80)) < 50){
                 rotationBase = points[i];
             }
         }
-        selectedRotationPoints[1] = rotationTarget;
-        selectedRotationPoints[0] = Point(rotationBase.x + 60,rotationBase.y - 60);
+        selectedRotationPoints[1] = Point(rotationTarget.x - 20, rotationTarget.y);
+        selectedRotationPoints[0] = Point(rotationBase.x + 65, rotationBase.y - 80);
         points.clear();
-        points.push_back(rotationTarget);
-        points.push_back(Point(rotationBase.x + 60,rotationBase.y - 60));
+        points.push_back(Point(rotationTarget.x - 20, rotationTarget.y));
+        points.push_back(Point(rotationBase.x + 65,rotationBase.y - 80));
     }
 }
 
@@ -641,7 +576,7 @@ void ProgramHandeler:: selectUpAndDownPoints(vector<Point> &points){
 
 void ProgramHandeler::connectPoints(Mat& drawing,vector<Point> &points){
     for(int i=0; i < points.size() - 1; i++){
-        line(drawing,points[i],points[i+1],Scalar(255,255,255),1,8);
+        line(drawing,points[i],points[i+1],Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),1,8);
     }
 }
 

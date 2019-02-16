@@ -3,6 +3,7 @@
 
 #include "Headers/includes.h"
 using namespace cv;
+using namespace std;
 
 class LineEquations{
 
@@ -15,9 +16,9 @@ public:
     Point find_twolines_collusion(const double afactor, const double bfactor,
                                  const double apolefactor, const double bpolefactor);
     double point_length(Point i1,Point i2);
+    Point findMeanPoint(const vector<Point>);
 private:
 
 
 };
-
 #endif
