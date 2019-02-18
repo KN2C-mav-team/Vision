@@ -342,7 +342,7 @@ bool ProgramHandeler::isInsideBlackArea(vector<Point> points, Mat &blackDr,
                 // qDebug()<<"unwanted contour with area"<<contourArea(blackCn[i]);
                 return false;
             } else {
-                //qDebug()<<"wanted contour with area"<<contourArea(blackCn[i]);
+                qDebug()<<"wanted contour with area"<<contourArea(blackCn[i]);
             }
         }
         if( pointPolygonTest(blackCn[i],image_center,false) == 1){

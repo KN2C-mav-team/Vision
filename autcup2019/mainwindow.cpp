@@ -8,7 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer,SIGNAL(timeout()),&camera,SLOT(downFrame_ready()));
     connect(&camera,SIGNAL(down_image(Mat)),&ph,SLOT(imageCallBack(Mat)));
     connect(&camera,SIGNAL(down_image(Mat)),&QR,SLOT(imageCallback(Mat)));
+    connect(&camera,SIGNAL(down_image(Mat)),&opt,SLOT(timerEvent(Mat)));
     connect(&QR,SIGNAL(QR_signal(string,string,vector<Point>,int)),&ph,SLOT(Callback(string,string,vector<Point>,int)));
+    connect(&ph,SIGNAL(connectorPkg(double,double)),&robot,SLOT(lineSerial_CB(double,double)));
+    connect(&opt,SIGNAL(optSig(int,int)),&robot,SLOT(optFlow_CB(int,int));
     timer->start(2);
 
 

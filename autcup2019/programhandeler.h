@@ -13,7 +13,7 @@
 #define MAX_ERODE 10
 #define MAX_DILATE 10
 #define STARTING_ERODE 0
-#define STARTING_DILATE 1
+#define STARTING_DILATE 0
 #define NORTH "N"
 #define SOUTH "S"
 #define EAST "E"

@@ -43,6 +43,6 @@ void capture::downFrame_ready()
 {
     down_cam >> down_frame ;
     emit down_image(down_frame);
-    imshow("down frame",down_frame);
+   // imshow("down frame",down_frame);
 }
 

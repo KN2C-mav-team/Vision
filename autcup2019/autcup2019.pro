@@ -14,6 +14,7 @@ TEMPLATE = app
 
 
 CONFIG += c++11
+CONFIG += extserialport
 # QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
@@ -22,7 +23,9 @@ SOURCES += main.cpp\
     programhandeler.cpp \
     inverter.cpp \
     lineEquations.cpp \
-    qr_reciever.cpp
+    qr_reciever.cpp \
+    optflow.cpp
+   quad_board.cpp
 
 HEADERS  += mainwindow.h \
     capture.h \
@@ -30,9 +33,13 @@ HEADERS  += mainwindow.h \
     programhandeler.h \
     inverter.h \
     lineEquations.h \
-    qr_reciever.h
+    qr_reciever.h \
+    optflow.h
+   quad_board.h
 
 
 LIBS += `pkg-config opencv --libs`
 
 LIBS+=-lzbar
+
+

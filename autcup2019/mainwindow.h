@@ -20,6 +20,8 @@ public:
     QTimer *timer;
     ProgramHandeler ph;
     qr_reciever QR;
+    OptFlow opt;
+    Quad_Board robot;
 
 };
 
