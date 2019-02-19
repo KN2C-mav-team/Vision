@@ -17,6 +17,24 @@
 #define EAST "E"
 #define WEST "W"
 
+#define LEFT_X_OFFSET -10
+#define LEFT_Y_OFFSET 0
+
+#define BASE_LEFT_X_OFFSET +55
+#define BASE_LEFT_Y_OFFSET -60
+
+
+#define RIGHT_X_OFFSET +10
+#define RIGHT_Y_OFFSET 0
+
+#define BASE_RIGHT_X_OFFSET -55
+#define BASE_RIGHT_Y_OFFSET -60
+
+#define DEBUG
+//#define HIER_EN
+//#define SAY_QR_DATA
+
+
 
 using namespace cv;
 using namespace std;
@@ -28,11 +46,12 @@ public:
 
     ProgramHandeler();
     ~ProgramHandeler();
-    void imageCallBack(const sensor_msgs::ImageConstPtr&);
+    void imageCallBack(const sensor_msgs::ImageConstPtr& );
     void Callback(const line_connector2::qr_msg::ConstPtr& );
 
     ros::NodeHandle nh_;
     ros::Subscriber subscriber;
+    ros::Subscriber subscriber2;
     image_transport::Subscriber image_sub;
     image_transport::ImageTransport it_;
     cv_bridge::CvImagePtr cv_ptr;

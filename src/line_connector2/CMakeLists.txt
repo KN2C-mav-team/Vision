@@ -85,6 +85,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    my_msg.msg
    qr_msg.msg
+   gate_msg.msg
  )
 
 ## Generate services in the 'srv' folder

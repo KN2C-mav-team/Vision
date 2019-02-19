@@ -17,7 +17,7 @@
 #include <qmath.h>
 #include <zbar.h>
 #include "Headers/ProgramHandeler.h"
-#include "Headers/inverter.h"
+#include "Headers/inverter.h"8
 #include "Headers/LineEquations.h"
 #include <line_connector2/my_msg.h>
 #include <line_connector2/qr_msg.h>

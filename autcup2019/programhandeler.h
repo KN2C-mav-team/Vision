@@ -13,13 +13,29 @@
 #define MAX_ERODE 10
 #define MAX_DILATE 10
 #define STARTING_ERODE 0
-#define STARTING_DILATE 0
+#define STARTING_DILATE 1
 #define NORTH "N"
 #define SOUTH "S"
 #define EAST "E"
 #define WEST "W"
 
+#define LEFT_X_OFFSET -10
+#define LEFT_Y_OFFSET 0
+
+#define BASE_LEFT_X_OFFSET +55
+#define BASE_LEFT_Y_OFFSET -60
+
+
+#define RIGHT_X_OFFSET +10
+#define RIGHT_Y_OFFSET 0
+
+#define BASE_RIGHT_X_OFFSET -55
+#define BASE_RIGHT_Y_OFFSET -60
+
 #define DEBUG
+//#define HIER_EN
+//#define SAY_QR_DATA
+
 #define LOG
 
 using namespace cv;

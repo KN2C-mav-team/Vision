@@ -12,6 +12,7 @@ int main(int argc, char** argv){
                                     &ProgramHandeler::imageCallBack, &ph);
     ph.subscriber = ph.nh_.subscribe("/qr_detector/Qr_Datas",1 ,
                                     &ProgramHandeler::Callback, &ph);
+
     ros::spin();
 
     return 0;

@@ -1,0 +1,7 @@
+<launch>
+
+  <group ns="lc_launcher">
+    <node pkg="line_connector2" name="line_connector2" type="line_connect2"/>
+  </group>
+
+</launch>

@@ -365,6 +365,7 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
         connectPoints(fin_drawing, final_found_points);
         return;
     } else {
+        dilate_factor = 1;
         //find the current direction
         string qr_dir = findDirection();
         if(qr_dir == "right"){
@@ -373,8 +374,10 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
                 setAngel(points[0],points[1]);
                 if((!reachedTargetPoint(rotationTarget))){
                     lock_qr = true;
-                    circle(comp_drawing,Point(rotationTarget.x + 20, rotationTarget.y),10,Scalar(MAX_SCALAR,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x - 65,rotationBase.y - 80),10,Scalar(0,MAX_SCALAR,0),3,5);
+                    circle(comp_drawing,Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y + RIGHT_Y_OFFSET),
+                           10,Scalar(MAX_SCALAR,0,0),3,5);
+                    circle(comp_drawing,Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET),
+                           10,Scalar(0,MAX_SCALAR,0),3,5);
                 } else {
                     //take the new direction
                     takeNewDirections();
@@ -395,8 +398,10 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
                 setAngel(points[0],points[1]);
                 if((!reachedTargetPoint(rotationTarget)) ){
                     lock_qr = true;
-                    circle(comp_drawing,Point(rotationTarget.x - 20, rotationTarget.y),10,Scalar(MAX_SCALAR,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x + 65,rotationBase.y - 80),10,Scalar(0,MAX_SCALAR,0),3,5);
+                    circle(comp_drawing,Point(rotationTarget.x + LEFT_X_OFFSET, rotationTarget.y + LEFT_Y_OFFSET),
+                           10,Scalar(MAX_SCALAR,0,0),3,5);
+                    circle(comp_drawing,Point(rotationBase.x + BASE_LEFT_X_OFFSET,rotationBase.y + BASE_LEFT_Y_OFFSET),
+                           10,Scalar(0,MAX_SCALAR,0),3,5);
                 } else {
                     //take the new direction
                     takeNewDirections();
@@ -458,13 +463,14 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
         Point farRightPoint;
         farRightPoint = points[0];
         selectedRotationPoints.clear();
-        selectedRotationPoints.push_back(Point(points[0].x - 60 , points[0].y - 60));
+        selectedRotationPoints.push_back(Point(points[0].x + BASE_RIGHT_X_OFFSET ,
+                                         points[0].y + BASE_RIGHT_Y_OFFSET));
         for(int i=1;i<points.size();i++){
             if( points[i].x > farRightPoint .x)  {
                 farRightPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(Point(farRightPoint.x + 20 , farRightPoint.y));
+        selectedRotationPoints.push_back(Point(farRightPoint.x + RIGHT_X_OFFSET , farRightPoint.y));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -473,18 +479,19 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
         vector<Point>finalSelected;
         finalSelected.clear();
         for(int i=0;i<points.size();i++){
-            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x + 20 ,points[i].y)) < 45){
+            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x + RIGHT_X_OFFSET ,points[i].y)) < 45){
                 rotationTarget = points[i];
             }
-            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x - 60 ,points[i].y - 60)) < 45){
+            if(eq.point_length(selectedRotationPoints[0],
+                               Point(points[i].x + BASE_RIGHT_X_OFFSET ,points[i].y + BASE_RIGHT_Y_OFFSET)) < 45){
                 rotationBase = points[i];
             }
         }
-        selectedRotationPoints[1] = Point(rotationTarget.x + 20, rotationTarget.y);
-        selectedRotationPoints[0] = Point(rotationBase.x - 60,rotationBase.y - 60);
+        selectedRotationPoints[1] = Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y);
+        selectedRotationPoints[0] = Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET);
         points.clear();
-        points.push_back(Point(rotationTarget.x + 20, rotationTarget.y));
-        points.push_back(Point(rotationBase.x - 60,rotationBase.y - 60));
+        points.push_back(Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y));
+        points.push_back(Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET));
     }
 }
 
@@ -493,13 +500,13 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
         Point farLeftPoint;
         farLeftPoint = points[0];
         selectedRotationPoints.clear();
-        selectedRotationPoints.push_back(Point(points[0].x + 65 , points[0].y - 80));
+        selectedRotationPoints.push_back(Point(points[0].x + BASE_LEFT_X_OFFSET , points[0].y + BASE_LEFT_Y_OFFSET));
         for(int i=1;i<points.size();i++){
             if( points[i].x < farLeftPoint .x)  {
                 farLeftPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(Point(farLeftPoint.x - 20 , farLeftPoint.y));
+        selectedRotationPoints.push_back(Point(farLeftPoint.x + LEFT_X_OFFSET , farLeftPoint.y + LEFT_Y_OFFSET));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -508,18 +515,20 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
         vector<Point> finalSelected;
         finalSelected.clear();
         for(int i=0;i<points.size();i++){
-            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x - 20 ,points[i].y)) < 50){
+            if(eq.point_length(selectedRotationPoints[1],
+                               Point(points[i].x + LEFT_X_OFFSET ,points[i].y + LEFT_Y_OFFSET)) < 50){
                 rotationTarget = points[i];
             }
-            if(eq.point_length(selectedRotationPoints[0], Point(points[i].x + 65 ,points[i].y - 80)) < 50){
+            if(eq.point_length(selectedRotationPoints[0],
+                               Point(points[i].x + BASE_LEFT_X_OFFSET ,points[i].y + BASE_LEFT_Y_OFFSET)) < 50){
                 rotationBase = points[i];
             }
         }
-        selectedRotationPoints[1] = Point(rotationTarget.x - 20, rotationTarget.y);
-        selectedRotationPoints[0] = Point(rotationBase.x + 65, rotationBase.y - 80);
+        selectedRotationPoints[1] = Point(rotationTarget.x + LEFT_X_OFFSET, rotationTarget.y);
+        selectedRotationPoints[0] = Point(rotationBase.x + BASE_LEFT_X_OFFSET, rotationBase.y + BASE_LEFT_Y_OFFSET);
         points.clear();
-        points.push_back(Point(rotationTarget.x - 20, rotationTarget.y));
-        points.push_back(Point(rotationBase.x + 65,rotationBase.y - 80));
+        points.push_back(Point(rotationTarget.x + LEFT_X_OFFSET, rotationTarget.y));
+        points.push_back(Point(rotationBase.x + BASE_LEFT_X_OFFSET,rotationBase.y + BASE_LEFT_Y_OFFSET));
     }
 }
 
