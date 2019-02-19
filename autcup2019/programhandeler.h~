@@ -19,24 +19,8 @@
 #define EAST "E"
 #define WEST "W"
 
-#define LEFT_X_OFFSET -10
-#define LEFT_Y_OFFSET 0
-
-#define BASE_LEFT_X_OFFSET +55
-#define BASE_LEFT_Y_OFFSET -60
-
-
-#define RIGHT_X_OFFSET +10
-#define RIGHT_Y_OFFSET 0
-
-#define BASE_RIGHT_X_OFFSET -55
-#define BASE_RIGHT_Y_OFFSET -60
-
-//#define DEBUG
-//#define HIER_EN
-//#define SAY_QR_DATA
-
-//#define LOG
+#define DEBUG
+#define LOG
 
 using namespace cv;
 using namespace std;
@@ -67,7 +51,6 @@ private:
     void setAngel(Point ,Point);
     void choosePoints(vector<vector<Point> >contours, vector<Vec4i>,
                       vector<Point>&, Mat &);
-    void sortByY(vector<Point>&);
     bool computeBlackArea(vector <Point> ,Mat );
     bool checkRect(vector<Point>);
     bool isInsideBlackArea(vector<Point>, Mat & ,
@@ -119,4 +102,3 @@ public slots:
 };
 
 #endif // PROGRAMHANDELER_H
-

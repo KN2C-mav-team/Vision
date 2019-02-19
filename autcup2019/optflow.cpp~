@@ -82,7 +82,7 @@ void OptFlow::OptFlow_LK()
     //#ifdef _GRAPH
     //  imshow("LK Demo", colorframe);
     //#endif
-   // std::cout<<"Delay"<< d.elapsed()<<std::endl;
+    std::cout<<"Delay"<< d.elapsed()<<std::endl;
     // waitKey(2);
 
     std::swap(points[1], points[0]);

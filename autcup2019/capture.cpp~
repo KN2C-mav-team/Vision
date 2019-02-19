@@ -23,7 +23,7 @@ capture::capture(QObject *parent) : QObject(parent)
     front_cam.open(FRONT_CAM_NUM);
     if( front_cam.isOpened() )
     {
-        front_cam.set(CV_CAP_PROP_FPS, FRONT_FPS);
+       /* front_cam.set(CV_CAP_PROP_FPS, FRONT_FPS);
         front_cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
         front_cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
 	//qDebug()<<"Front cam opened"; // up to here program worked
@@ -41,14 +41,14 @@ capture::capture(QObject *parent) : QObject(parent)
 void capture::frontFrame_ready()
 {
     front_cam >> front_frame;
-   // imshow("front frame",front_frame);
+    imshow("front frame",front_frame);
     emit front_image(front_frame);
 }
 
 void capture::downFrame_ready()
 {
     down_cam >> down_frame ;
-   // imshow("down frame",down_frame);
+    imshow("down frame",down_frame);
     emit down_image(down_frame);
     
 }

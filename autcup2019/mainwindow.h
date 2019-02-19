@@ -17,7 +17,7 @@ public:
     MainWindow(QWidget *parent = 0 );
     ~MainWindow();
     capture camera;
-    QTimer *timer;
+    QTimer timer;
     ProgramHandeler ph;
     qr_reciever QR;
     OptFlow opt;
