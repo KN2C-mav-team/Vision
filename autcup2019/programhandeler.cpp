@@ -189,12 +189,10 @@ Mat ProgramHandeler::findWhiteContours(Mat &white_input , Mat &blkThs, Mat &blac
     choosePoints(contours, hierarchy, found_points, drawing);
 
     if(found_points.size() > 0){
-        std::sort(found_points.begin(), found_points.end() , [] (Point a,Point b){
-            return a.y > b.y;
-        });
-        for(int i=0;i<found_points.size();i++){
-            putText(drawing,std::to_string(i),found_points[i],1,2,Scalar(MAX_SCALAR,MAX_SCALAR,0),1,8);
-        }
+        sortByY(found_points);
+//        for(int i=0;i<found_points.size();i++){
+//            putText(drawing,std::to_string(i),found_points[i],1,2,Scalar(MAX_SCALAR,MAX_SCALAR,0),1,8);
+//        }
         final_found_points.clear();
         handleRouting(drawing, final_drawing, found_points);
     }
@@ -280,9 +278,7 @@ void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i>
             if (contourArea(contours[i])<MAXIMUM_RECTANGLE_AREA
                     && contourArea(contours[i])>MINIMUM_RECTANGLE_AREA ){
                 approxPolyDP(contours[i], approx[i], (double)epsilon, true);
-                sort(approx[i].begin(), approx[i].end() , [] (Point a,Point b){
-                    return a.y >= b.y;
-                });
+                sortByY(approx[i]);
 
                 if((approx[i].size() < 9 && checkRect(approx[i]))
                         /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
@@ -301,9 +297,7 @@ void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i>
 }
 
 bool ProgramHandeler::checkRect(vector<Point> input){
-    sort(input.begin(),input.end() , [] (Point a,Point b){
-        return a.y >= b.y;
-    });
+    sortByY(input);
     if(input.size() > 8){
         return false;
     }
@@ -627,5 +621,21 @@ void ProgramHandeler::Callback(const string type , const string data, const vect
             }
         }
     }
+}
+
+void ProgramHandeler::sortByY(vector<Point> &points){
+    int  j;
+    Point key;
+       for (int i = 1; i < points.size(); i++)
+       {
+           key = points[i];
+           j = i-1;
+           while (j >= 0 && points[j].y < key.y)
+           {
+               points[j+1] = points[j];
+               j = j-1;
+           }
+           points[j+1] = key;
+       }
 }
 

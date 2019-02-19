@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 
-CONFIG += c++11
+#CONFIG += c++11
 CONFIG += extserialport
 # QMAKE_CXXFLAGS += -std=c++11
 
@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     inverter.cpp \
     lineEquations.cpp \
     qr_reciever.cpp \
-    optflow.cpp
+    optflow.cpp \
+    quad_board.cpp
    quad_board.cpp
 
 HEADERS  += mainwindow.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     inverter.h \
     lineEquations.h \
     qr_reciever.h \
-    optflow.h
+    optflow.h \
+    quad_board.h
    quad_board.h
 
 

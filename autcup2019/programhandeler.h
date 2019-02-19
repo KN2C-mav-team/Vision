@@ -67,6 +67,7 @@ private:
     void setAngel(Point ,Point);
     void choosePoints(vector<vector<Point> >contours, vector<Vec4i>,
                       vector<Point>&, Mat &);
+    void sortByY(vector<Point>&);
     bool computeBlackArea(vector <Point> ,Mat );
     bool checkRect(vector<Point>);
     bool isInsideBlackArea(vector<Point>, Mat & ,

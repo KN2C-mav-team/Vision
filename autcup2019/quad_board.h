@@ -52,7 +52,7 @@ public:
     QByteArray data_send;
     uchar Num;
     uchar check_Sum;
-    QextSerialPort *serial_port;
+    //QextSerialPort *serial_port;
     ch2int conv;
   //  void window_CB(const serial_handler::WinMsg &msg);
     int load[6]={0,0,0,0,0,0};

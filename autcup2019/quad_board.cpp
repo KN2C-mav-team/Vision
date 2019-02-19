@@ -5,22 +5,22 @@
 Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
 {
         QString portName = QLatin1String(_DEV_SERIAL);
-        serial_port =  new QextSerialPort(QString(portName), QextSerialPort::EventDriven);
-        serial_port->close();
-        serial_port->setPortName(_DEV_SERIAL);
+//        serial_port =  new QextSerialPort(QString(portName), QextSerialPort::EventDriven);
+//        serial_port->close();
+//        serial_port->setPortName(_DEV_SERIAL);
 
-        serial_port->open(QIODevice::ReadWrite);
+//        serial_port->open(QIODevice::ReadWrite);
 
-        serial_port->setBaudRate(BAUD9600);
-        serial_port->setParity(PAR_NONE);
-        serial_port->setFlowControl(FLOW_OFF);
-        serial_port->setDataBits(DATA_8);
-        serial_port->setStopBits(STOP_1);
+//        serial_port->setBaudRate(BAUD9600);
+//        serial_port->setParity(PAR_NONE);
+//        serial_port->setFlowControl(FLOW_OFF);
+//        serial_port->setDataBits(DATA_8);
+//        serial_port->setStopBits(STOP_1);
 
-        serial_port->setDtr(0);
-        serial_port->setRts(0);
+//        serial_port->setDtr(0);
+//        serial_port->setRts(0);
 
-        serial_port->flush();
+//        serial_port->flush();
 
 
 
@@ -30,17 +30,17 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
     j=0;
     integer_received_counter = 0;
     Num = 0;
-       if( serial_port->isOpen())
-        {
-            qDebug("Serial Port Opened  .");
-        }
-        else
-        {
-            qDebug("Serial Port NOT Opened!!!!!!!");
-            exit(0);
+//       if( serial_port->isOpen())
+//        {
+//            qDebug("Serial Port Opened  .");
+//        }
+//        else
+//        {
+//            qDebug("Serial Port NOT Opened!!!!!!!");
+//            exit(0);
 
-        }
-     connect(serial_port, SIGNAL(readyRead()), this, SLOT(readData()));
+//        }
+//     connect(serial_port, SIGNAL(readyRead()), this, SLOT(readData()));
 }
 
 Quad_Board::~Quad_Board()
@@ -156,9 +156,9 @@ void Quad_Board::Fill_Data(uchar num,...)
 void Quad_Board::Send_Data()
 {
     data_send.append((~(check_Sum) + 1));
-    serial_port->write(data_send);
+    //serial_port->write(data_send);
     //qDebug()<<data_send.toHex();
-   serial_port->flush();
+   //serial_port->flush();
 
 }
 
@@ -194,17 +194,17 @@ Fill_Data(5,load[0],load[1],load[2],load[3],load[4]);
 }
 void Quad_Board::readData()
 {
-     QByteArray _data = serial_port->readAll();
+     //QByteArray _data = serial_port->readAll();
     unsigned char a;
 
     //qDebug() << "read*";
     //printf("read\n");
 
-        for (int i=0;i<_data.size();i++)
-        {
-            a=_data.at(i) ;
-            Mpc_decode(a);
-        }
+//        for (int i=0;i<_data.size();i++)
+//        {
+//            a=_data.at(i) ;
+//            Mpc_decode(a);
+//        }
 
 
 }

@@ -18,8 +18,8 @@
 
 using namespace cv;
 
-class capture : public QObject
-{
+class capture : public QObject{
+
     Q_OBJECT
 public:
     explicit capture(QObject *parent = 0);
@@ -29,8 +29,6 @@ public:
     Mat front_frame;
     Mat down_frame;
 
-
-
 signals:
 
     void front_image(Mat );
@@ -39,6 +37,7 @@ signals:
 public slots:
     void frontFrame_ready();
     void downFrame_ready();
+
 };
 
 #endif // CAPTURE_H
