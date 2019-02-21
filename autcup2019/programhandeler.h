@@ -85,6 +85,8 @@ private:
     bool qr_rect_found;
     bool optical_flow_lock;
     bool rotation_initiated;
+    bool straight_lock;
+    bool onlyOnePointDetected;
     int erode_factor;
     int dilate_factor;
     int max_L,min_L;
@@ -100,11 +102,14 @@ private:
     string quad_current_direction;
     Point rotationTarget;
     Point rotationBase;
+    Point straightBase;
+    Point straightTarget;
     Point image_center;
     Point qr_center;
     vector<Point> saved_points;
     vector<Point> qr_rect;
     vector<Point> selectedRotationPoints;
+    vector<Point> selectedStraightPoints;
     vector<Point2f> optical_old_points;
     vector<Point> final_found_points;
     Mat old_frame;

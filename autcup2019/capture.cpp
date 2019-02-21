@@ -20,7 +20,7 @@ capture::capture(QObject *parent) : QObject(parent)
         exit(0);
     }
 
-    front_cam.open(FRONT_CAM_NUM);
+  /*  front_cam.open(FRONT_CAM_NUM);
     if( front_cam.isOpened() )
     {
         front_cam.set(CV_CAP_PROP_FPS, FRONT_FPS);
@@ -33,7 +33,7 @@ capture::capture(QObject *parent) : QObject(parent)
     {
         qDebug()<<"could not open front_cam\n";
         exit(0);
-    }
+    }*/
 
 
 }
