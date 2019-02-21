@@ -32,11 +32,11 @@
 #define BASE_RIGHT_X_OFFSET -55
 #define BASE_RIGHT_Y_OFFSET -60
 
-//#define DEBUG
+#define DEBUG
 //#define HIER_EN
 //#define SAY_QR_DATA
 
-//#define LOG
+#define LOG
 
 using namespace cv;
 using namespace std;

@@ -3,13 +3,14 @@
 
 #include <QObject>
 //#include "qextserialport.h"
-#include <qextserialport.h>
+//#include <qextserialport.h>
 #include "qdebug.h"
 
 
 #define _DEV_SERIAL            "/dev/ttySAC0"
 //"/dev/ttyUSB0"
 //#define MPC_BUFF_AMOUNT  11
+//#define SE_EXT
 
 
 class Quad_Board : public QObject
@@ -53,7 +54,7 @@ public:
     QByteArray data_send;
     uchar Num;
     uchar check_Sum;
-    QextSerialPort *serial_port;
+    //QextSerialPort *serial_port;
     ch2int conv;
   //  void window_CB(const serial_handler::WinMsg &msg);
     int load[6]={0,0,0,0,0,0};

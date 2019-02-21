@@ -12,7 +12,7 @@ ProgramHandeler::ProgramHandeler(QObject *parent) : QObject(parent){
     epsilon = 5;
     erode_factor = STARTING_ERODE;
     dilate_factor = STARTING_DILATE;
-    max_L = MAX_SCALAR;min_L = 100;
+    max_L = MAX_SCALAR;min_L = 170;
     max_H = MAX_SCALAR;min_H = 0;
     max_S = MAX_SCALAR;min_S = 0;
     black_max_L = MAX_SCALAR;black_min_L = 172;
