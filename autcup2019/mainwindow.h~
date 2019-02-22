@@ -16,7 +16,6 @@ public:
     ~MainWindow();
     capture camera;
     QTimer *timer;
-    QTimer *timer2;
     ProgramHandeler ph;
     Handler gh;//gate handler
     qr_reciever QR;

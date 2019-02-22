@@ -19,7 +19,7 @@ void qr_reciever::imageCallback(Mat raw_image)
 void qr_reciever::decoder(Mat &input){
 
     Mat gray_input;
-
+    QTime time;
     cvtColor(input,gray_input,CV_BGR2GRAY);
 
     zbar::ImageScanner z_scanner;
@@ -30,7 +30,7 @@ void qr_reciever::decoder(Mat &input){
     int detected =z_scanner.scan(z_image);
 
     vector<Point> locs;
-
+time.start();
     if(detected == 1){
         for(zbar::Image::SymbolIterator symbol = z_image.symbol_begin();
             symbol != z_image.symbol_end();
@@ -48,7 +48,7 @@ void qr_reciever::decoder(Mat &input){
     } else if(detected == 0){
         emit QR_signal("","",locs,detected);
     }
-
+qDebug()<<time.elapsed();
  /*   if(!locs.empty()){
         Rect rec = boundingRect(locs);
         rectangle(input, rec, Scalar(0,0,255), 3,5);

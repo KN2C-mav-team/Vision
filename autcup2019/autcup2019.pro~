@@ -47,4 +47,4 @@ HEADERS  += mainwindow.h \
 LIBS += `pkg-config opencv --libs`
 
 LIBS+=-lzbar
-#include(/home/kimia/qextserialport-master/src/qextserialport.pri)
+include(/home/kimia/qextserialport-master/src/qextserialport.pri)

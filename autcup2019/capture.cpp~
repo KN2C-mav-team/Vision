@@ -50,7 +50,7 @@ void capture::downFrame_ready()
 {
     Mat l;
     down_cam >> down_frame ;
-    l = down_frame.clone();
+    down_frame.copyTo(l);
     //imshow("down frame",down_frame);
     emit down_image(down_frame);
     emit down_image_line(l);

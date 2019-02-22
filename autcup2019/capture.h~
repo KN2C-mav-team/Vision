@@ -43,7 +43,8 @@ signals:
 public slots:
     void frontFrame_ready();
     void downFrame_ready();
-
+    void downFrame_ready_line();
+    void downFrame_ready_qr();
 };
 
 #endif // CAPTURE_H

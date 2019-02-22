@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timer,SIGNAL(timeout()),&camera,SLOT(downFrame_ready()),Qt::ConnectionType::DirectConnection);
     connect(&camera,SIGNAL(down_image_line(Mat)),&ph,SLOT(imageCallBack(Mat)),Qt::ConnectionType::DirectConnection);
     connect(&camera,SIGNAL(front_image(Mat)),&gh,SLOT(imageCallback(Mat)),Qt::ConnectionType::DirectConnection);
-//    connect(&camera,SIGNAL(down_image_qr(Mat)),&QR,SLOT(imageCallback(Mat)),Qt::ConnectionType::DirectConnection);
+    connect(&camera,SIGNAL(down_image_qr(Mat)),&QR,SLOT(imageCallback(Mat)),Qt::ConnectionType::DirectConnection);
     connect(&camera,SIGNAL(down_image(Mat)),&opt,SLOT(timerEvent(Mat)),Qt::ConnectionType::DirectConnection);
  //   connect(&QR,SIGNAL(QR_signal(string,string,vector<Point>,int)),&ph,SLOT(Callback(string,string,vector<Point>,int)),Qt::ConnectionType::DirectConnection);
     connect(&opt,SIGNAL(optSig(int,int)),&robot,SLOT(optFlow_CB(int,int)),Qt::ConnectionType::DirectConnection);

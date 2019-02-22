@@ -153,9 +153,9 @@ void ProgramHandeler::imageCallBack(Mat raw_image){
     imshow("wholeContersOfWhite",wholeContoursOfWhite);
 #endif
 #ifdef LOG
-    qDebug()<<"delay time : "<<time.elapsed();
-#endif
 
+#endif
+    qDebug()<<"delay time : "<<time.elapsed();
    // waitKey(3);
 
 }
