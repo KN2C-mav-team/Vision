@@ -5,44 +5,48 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    timer = new QTimer(this);	
-   h_thread =new QThread();
-    ph_thread =new QThread();   
-    opt_thread =new QThread();
-    qr_thread =new QThread();
-    cam_thread = new QThread();
-    line_thread =  new QThread();
-    robot_thread =  new QThread();
 
-    gh.moveToThread(h_thread);
-    QR.moveToThread(qr_thread);
-    ph.moveToThread(ph_thread);
-    opt.moveToThread(opt_thread);
-    line.moveToThread(line_thread);
-    camera.moveToThread(cam_thread);
-    robot.moveToThread(robot_thread);
+    camera.moveToThread(&cam_thread);
+    opt.moveToThread(&opt_thread);
+    gh.moveToThread(&h_thread);
+    ph.moveToThread(&ph_thread);  
+    QR.moveToThread(&qr_thread);
+    line.moveToThread(&line_thread);
+    robot.moveToThread(&robot_thread);
 
 
+    qRegisterMetaType< cv::Mat >("cv::Mat");
+    qRegisterMetaType< string >("string");
+    qRegisterMetaType< std::vector<cv::Point> >("std::vector<cv::Point>");
+    connect(&timer,SIGNAL(timeout()),&camera,SLOT(frontFrame_ready()));
+    connect(&timer,SIGNAL(timeout()),&camera,SLOT(downFrame_ready()));
+    connect(&camera,SIGNAL(down_image_line(cv::Mat)),&ph,SLOT(imageCallBack(cv::Mat)));
+    connect(&camera,SIGNAL(front_image(cv::Mat)),&gh,SLOT(imageCallback(cv::Mat)));
+    connect(&camera,SIGNAL(down_image(cv::Mat)),&QR,SLOT(imageCallback(cv::Mat)));
+    connect(&camera,SIGNAL(down_image(cv::Mat)),&opt,SLOT(timerEvent(cv::Mat)));
+    connect(&cam_thread, SIGNAL (started()), this, SLOT (process())); 
+    connect(&QR,SIGNAL(QR_signal(string,string,std::vector<cv::Point>,int)),&ph,SLOT(Callback(string,string,std::vector<cv::Point>,int)));
+    connect(&opt,SIGNAL(optSig(int,int)),&robot,SLOT(optFlow_CB(int,int)));
+    connect(&gh,SIGNAL(gateCallBack(int)),&robot,SLOT(gateSerial_CB(int)));
+    connect(&ph,SIGNAL(connectorPkg(double,double)),&robot,SLOT(lineSerial_CB(double,double)));
 
-    connect(timer,SIGNAL(timeout()),&camera,SLOT(frontFrame_ready()),Qt::ConnectionType::DirectConnection);
-    connect(timer,SIGNAL(timeout()),&camera,SLOT(downFrame_ready()),Qt::ConnectionType::DirectConnection);
-    connect(&camera,SIGNAL(down_image_line(Mat)),&ph,SLOT(imageCallBack(Mat)),Qt::ConnectionType::DirectConnection);
-    connect(&camera,SIGNAL(front_image(Mat)),&gh,SLOT(imageCallback(Mat)),Qt::ConnectionType::DirectConnection);
-    connect(&camera,SIGNAL(down_image_qr(Mat)),&QR,SLOT(imageCallback(Mat)),Qt::ConnectionType::DirectConnection);
-    connect(&camera,SIGNAL(down_image(Mat)),&opt,SLOT(timerEvent(Mat)),Qt::ConnectionType::DirectConnection);
- //   connect(&QR,SIGNAL(QR_signal(string,string,vector<Point>,int)),&ph,SLOT(Callback(string,string,vector<Point>,int)),Qt::ConnectionType::DirectConnection);
-    connect(&opt,SIGNAL(optSig(int,int)),&robot,SLOT(optFlow_CB(int,int)),Qt::ConnectionType::DirectConnection);
-   connect(&gh,SIGNAL(gateCallBack(int)),&robot,SLOT(gateSerial_CB(int)),Qt::ConnectionType::DirectConnection);
-   connect(&ph,SIGNAL(connectorPkg(double,double)),&robot,SLOT(lineSerial_CB(double,double)),Qt::ConnectionType::DirectConnection);
-
-    timer->start(2);
-    h_thread->start();
-    qr_thread->start();
-    ph_thread->start();
-    cam_thread -> start();
-    opt_thread->start();
+    h_thread.start();
+    qr_thread.start();
+    ph_thread.start();
+ qDebug()<<"MW_T"<<QThread::currentThreadId();
+    cam_thread.start();
+    opt_thread.start();
+    robot_thread.start();
+    timer.start(2);
 
 }
+
+void MainWindow::process()
+{
+qDebug()<<"RUNN"<<opt_thread.isRunning();
+}
+
+
 
 MainWindow::~MainWindow()
 {

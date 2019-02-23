@@ -33,14 +33,14 @@ static const uint qt_meta_data_OptFlow[] = {
        8,   24,   26,   26, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      27,   43,   26,   26, 0x0a,
+      27,   47,   26,   26, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_OptFlow[] = {
-    "OptFlow\0optSig(int,int)\0,\0\0timerEvent(Mat)\0"
-    "raw_image\0"
+    "OptFlow\0optSig(int,int)\0,\0\0"
+    "timerEvent(cv::Mat)\0raw_image\0"
 };
 
 void OptFlow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -50,7 +50,7 @@ void OptFlow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         OptFlow *_t = static_cast<OptFlow *>(_o);
         switch (_id) {
         case 0: _t->optSig((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 1: _t->timerEvent((*reinterpret_cast< Mat(*)>(_a[1]))); break;
+        case 1: _t->timerEvent((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
         default: ;
         }
     }

@@ -36,7 +36,7 @@
 //#define HIER_EN
 //#define SAY_QR_DATA
 
-#define LOG
+//#define LOG
 
 using namespace cv;
 using namespace std;
@@ -118,8 +118,8 @@ signals:
     void connectorPkg(double, double);
 
 public slots:
-    void imageCallBack(Mat raw_image);
-    void Callback(const string , const string , const vector<Point> , int);
+    void imageCallBack(cv::Mat raw_image);
+    void Callback(const string , const string , const std::vector<cv::Point> , int);
 
 };
 

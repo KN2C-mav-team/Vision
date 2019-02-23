@@ -36,9 +36,9 @@ static const uint qt_meta_data_Handler[] = {
      101,  119,   39,   39, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     128,  147,   39,   39, 0x0a,
-     153,   39,   39,   39, 0x0a,
-     176,   39,   39,   39, 0x0a,
+     128,  151,   39,   39, 0x0a,
+     157,   39,   39,   39, 0x0a,
+     180,   39,   39,   39, 0x0a,
 
        0        // eod
 };
@@ -48,7 +48,7 @@ static const char qt_meta_stringdata_Handler[] = {
     "\0_SIGNAL_reduceNoise()\0"
     "_SIGNAL_Hist_And_Backproj(Mat)\0src\0"
     "Mat\0gateCallBack(int)\0movement\0"
-    "imageCallback(Mat)\0frame\0"
+    "imageCallback(cv::Mat)\0frame\0"
     "detectYellowRedFrame()\0reduceNoise()\0"
 };
 
@@ -63,7 +63,7 @@ void Handler::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 2: { Mat _r = _t->_SIGNAL_Hist_And_Backproj((*reinterpret_cast< Mat(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< Mat*>(_a[0]) = _r; }  break;
         case 3: _t->gateCallBack((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 4: _t->imageCallback((*reinterpret_cast< Mat(*)>(_a[1]))); break;
+        case 4: _t->imageCallback((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
         case 5: _t->detectYellowRedFrame(); break;
         case 6: _t->reduceNoise(); break;
         default: ;

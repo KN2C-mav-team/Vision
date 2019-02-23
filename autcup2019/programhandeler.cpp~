@@ -124,6 +124,8 @@ void ProgramHandeler::takeNewDirections(){
 
 void ProgramHandeler::imageCallBack(Mat raw_image){
 
+    qDebug()<<"PH Thread"<<QThread::currentThreadId();
+
     // imshow("ph",raw_image);
     time.start();
     Mat white_threshold ;
@@ -153,9 +155,9 @@ void ProgramHandeler::imageCallBack(Mat raw_image){
     imshow("wholeContersOfWhite",wholeContoursOfWhite);
 #endif
 #ifdef LOG
-
-#endif
     qDebug()<<"delay time : "<<time.elapsed();
+#endif
+
    // waitKey(3);
 
 }

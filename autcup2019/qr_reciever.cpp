@@ -16,9 +16,11 @@ void qr_reciever::imageCallback(Mat raw_image)
 }
 
 
-void qr_reciever::decoder(Mat &input){
+void qr_reciever::decoder(cv::Mat &input){
 
-    Mat gray_input;
+    qDebug()<<"QR Thread"<<QThread::currentThreadId();
+
+    Mat gray_input;   
 
     cvtColor(input,gray_input,CV_BGR2GRAY);
 
@@ -27,11 +29,11 @@ void qr_reciever::decoder(Mat &input){
 
     zbar::Image z_image(input.cols, input.rows, "Y800",
                         (uchar *)gray_input.data, input.cols * input.rows);
-    int detected =z_scanner.scan(z_image);
+      int detected =z_scanner.scan(z_image); /////////////DELAY HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE////////////
 
     vector<Point> locs;
 
-    if(detected == 1){
+   if(detected == 1){
         for(zbar::Image::SymbolIterator symbol = z_image.symbol_begin();
             symbol != z_image.symbol_end();
             ++symbol){

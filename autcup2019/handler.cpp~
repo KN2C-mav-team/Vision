@@ -213,7 +213,7 @@ void Handler::imageCallback(Mat frame)
     int b=clock();
 
     // qDebug()<<"DELAY"<<(b-a1)/double(CLOCKS_PER_SEC)*1000 ;
-    qDebug()<<"TOTAL DELAY : "<<((b-a)/double(CLOCKS_PER_SEC)-2)*1000  ;
+    qDebug()<<"TOTAL DELAY : "<<((b-a)/double(CLOCKS_PER_SEC))*1000  ;
     //imshow("LIVE",raw_frame);
 }
 

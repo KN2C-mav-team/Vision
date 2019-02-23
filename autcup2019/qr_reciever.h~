@@ -18,7 +18,7 @@ private:
     void publish(const string , const string , const vector<Point> , int );
 
 signals:
-    void QR_signal(const string , const string , const std::vector<cv::Point> , int );
+    void QR_signal(const string , const string , const vector<Point> , int );
 
 public slots:
     void imageCallback(cv::Mat raw_image);

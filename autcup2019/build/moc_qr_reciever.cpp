@@ -30,17 +30,18 @@ static const uint qt_meta_data_qr_reciever[] = {
        1,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      12,   55,   59,   59, 0x05,
+      12,   64,   68,   68, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      60,   79,   59,   59, 0x0a,
+      69,   92,   68,   68, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_qr_reciever[] = {
-    "qr_reciever\0QR_signal(string,string,vector<Point>,int)\0"
-    ",,,\0\0imageCallback(Mat)\0raw_image\0"
+    "qr_reciever\0"
+    "QR_signal(string,string,std::vector<cv::Point>,int)\0"
+    ",,,\0\0imageCallback(cv::Mat)\0raw_image\0"
 };
 
 void qr_reciever::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -49,8 +50,8 @@ void qr_reciever::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         Q_ASSERT(staticMetaObject.cast(_o));
         qr_reciever *_t = static_cast<qr_reciever *>(_o);
         switch (_id) {
-        case 0: _t->QR_signal((*reinterpret_cast< const string(*)>(_a[1])),(*reinterpret_cast< const string(*)>(_a[2])),(*reinterpret_cast< const vector<Point>(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
-        case 1: _t->imageCallback((*reinterpret_cast< Mat(*)>(_a[1]))); break;
+        case 0: _t->QR_signal((*reinterpret_cast< const string(*)>(_a[1])),(*reinterpret_cast< const string(*)>(_a[2])),(*reinterpret_cast< const std::vector<cv::Point>(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
+        case 1: _t->imageCallback((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -96,7 +97,7 @@ int qr_reciever::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void qr_reciever::QR_signal(const string _t1, const string _t2, const vector<Point> _t3, int _t4)
+void qr_reciever::QR_signal(const string _t1, const string _t2, const std::vector<cv::Point> _t3, int _t4)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

@@ -5,7 +5,6 @@
 //#include <QtExtSerialPort/qextserialport.h>
 #include <qextserialport.h>
 #include "qdebug.h"
-#include <includes.h>
 
 
 #define _DEV_SERIAL            "/dev/ttySAC0"

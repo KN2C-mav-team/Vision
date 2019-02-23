@@ -30,22 +30,23 @@ static const uint qt_meta_data_capture[] = {
        4,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-       8,   25,   25,   25, 0x05,
-      26,   25,   25,   25, 0x05,
-      42,   25,   25,   25, 0x05,
-      63,   25,   25,   25, 0x05,
+       8,   29,   29,   29, 0x05,
+      30,   29,   29,   29, 0x05,
+      50,   29,   29,   29, 0x05,
+      75,   29,   29,   29, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      82,   25,   25,   25, 0x0a,
-     101,   25,   25,   25, 0x0a,
+      94,   29,   29,   29, 0x0a,
+     113,   29,   29,   29, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_capture[] = {
-    "capture\0front_image(Mat)\0\0down_image(Mat)\0"
-    "down_image_line(Mat)\0down_image_qr(Mat)\0"
-    "frontFrame_ready()\0downFrame_ready()\0"
+    "capture\0front_image(cv::Mat)\0\0"
+    "down_image(cv::Mat)\0down_image_line(cv::Mat)\0"
+    "down_image_qr(Mat)\0frontFrame_ready()\0"
+    "downFrame_ready()\0"
 };
 
 void capture::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -54,9 +55,9 @@ void capture::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         Q_ASSERT(staticMetaObject.cast(_o));
         capture *_t = static_cast<capture *>(_o);
         switch (_id) {
-        case 0: _t->front_image((*reinterpret_cast< Mat(*)>(_a[1]))); break;
-        case 1: _t->down_image((*reinterpret_cast< Mat(*)>(_a[1]))); break;
-        case 2: _t->down_image_line((*reinterpret_cast< Mat(*)>(_a[1]))); break;
+        case 0: _t->front_image((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
+        case 1: _t->down_image((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
+        case 2: _t->down_image_line((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
         case 3: _t->down_image_qr((*reinterpret_cast< Mat(*)>(_a[1]))); break;
         case 4: _t->frontFrame_ready(); break;
         case 5: _t->downFrame_ready(); break;
@@ -105,21 +106,21 @@ int capture::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void capture::front_image(Mat _t1)
+void capture::front_image(cv::Mat _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void capture::down_image(Mat _t1)
+void capture::down_image(cv::Mat _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
-void capture::down_image_line(Mat _t1)
+void capture::down_image_line(cv::Mat _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);

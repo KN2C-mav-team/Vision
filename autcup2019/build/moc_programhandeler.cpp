@@ -33,16 +33,16 @@ static const uint qt_meta_data_ProgramHandeler[] = {
       16,   44,   46,   46, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      47,   66,   46,   46, 0x0a,
-      76,  118,   46,   46, 0x0a,
+      47,   70,   46,   46, 0x0a,
+      80,  131,   46,   46, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_ProgramHandeler[] = {
     "ProgramHandeler\0connectorPkg(double,double)\0"
-    ",\0\0imageCallBack(Mat)\0raw_image\0"
-    "Callback(string,string,vector<Point>,int)\0"
+    ",\0\0imageCallBack(cv::Mat)\0raw_image\0"
+    "Callback(string,string,std::vector<cv::Point>,int)\0"
     ",,,\0"
 };
 
@@ -53,8 +53,8 @@ void ProgramHandeler::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         ProgramHandeler *_t = static_cast<ProgramHandeler *>(_o);
         switch (_id) {
         case 0: _t->connectorPkg((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
-        case 1: _t->imageCallBack((*reinterpret_cast< Mat(*)>(_a[1]))); break;
-        case 2: _t->Callback((*reinterpret_cast< const string(*)>(_a[1])),(*reinterpret_cast< const string(*)>(_a[2])),(*reinterpret_cast< const vector<Point>(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
+        case 1: _t->imageCallBack((*reinterpret_cast< cv::Mat(*)>(_a[1]))); break;
+        case 2: _t->Callback((*reinterpret_cast< const string(*)>(_a[1])),(*reinterpret_cast< const string(*)>(_a[2])),(*reinterpret_cast< const std::vector<cv::Point>(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4]))); break;
         default: ;
         }
     }

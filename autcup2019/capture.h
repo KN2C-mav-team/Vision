@@ -4,6 +4,7 @@
 #include <QObject>
 #include <opencv2/opencv.hpp>
 #include <QDebug>
+#include <includes.h>
 
 
 #define FRONT_CAM_NUM 1
@@ -24,9 +25,10 @@ class capture : public QObject
 public:
     explicit capture(QObject *parent = 0);
 
-    VideoCapture front_cam,down_cam;
+    VideoCapture front_cam,down_cam;//,test_cam;
 
     Mat front_frame;
+    //Mat test_frame;
     Mat down_frame;
     Mat down_frame_line;
     Mat down_frame_qr;
@@ -35,9 +37,9 @@ public:
 
 signals:
 
-    void front_image(Mat );
-    void down_image(Mat );
-    void down_image_line(Mat );
+    void front_image(cv::Mat );
+    void down_image(cv::Mat );
+    void down_image_line(cv::Mat );
     void down_image_qr(Mat );
 
 public slots:

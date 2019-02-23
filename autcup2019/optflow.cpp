@@ -8,8 +8,9 @@ OptFlow::OptFlow(QObject *parent) : QObject(parent)
     termcrit = TermCriteria(CV_TERMCRIT_ITER|CV_TERMCRIT_EPS, 20, 0.03);
 }
 
-void OptFlow::timerEvent(Mat raw_image)
+void OptFlow::timerEvent(cv::Mat raw_image)
 {
+   std::cout<<"OPT "<<QThread::currentThreadId()<<std::endl;
     d.start();
     raw_image.copyTo(colorframe);
     cvtColor(colorframe, grayframe, CV_BGR2GRAY);

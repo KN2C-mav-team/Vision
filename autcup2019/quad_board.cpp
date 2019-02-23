@@ -198,7 +198,9 @@ void Quad_Board::optFlow_CB(int delta_x, int delta_y)
     load[0]=delta_x;
     load[1]=delta_y;
 // qDebug()<<load[2]<<" "<<load[3]<<" "<<load[4]<<" "<<load[5]<<endl;
-Fill_Data(6,load[0],load[1],load[2],load[3],load[4],load[5]);
+    qDebug()<<"Sending Data";
+    qDebug()<<"serial Thread"<<thread()->currentThreadId();
+    Fill_Data(6,load[0],load[1],load[2],load[3],load[4],load[5]);
 
 }
 void Quad_Board::readData()

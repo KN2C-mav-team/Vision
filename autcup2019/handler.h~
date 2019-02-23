@@ -45,7 +45,7 @@ signals:
     Mat _SIGNAL_Hist_And_Backproj(Mat src);
     void gateCallBack(int movement);
 public slots:
-    void imageCallback(cv::Mat frame);
+    void imageCallback(Mat frame);
     void detectYellowRedFrame();
     void reduceNoise();
 };

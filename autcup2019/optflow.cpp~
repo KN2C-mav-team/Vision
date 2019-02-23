@@ -10,7 +10,7 @@ OptFlow::OptFlow(QObject *parent) : QObject(parent)
 
 void OptFlow::timerEvent(Mat raw_image)
 {
-	qDebug()<<"opt";
+   std::cout<<"OPT "<<QThread::currentThreadId()<<std::endl;
     d.start();
     raw_image.copyTo(colorframe);
     cvtColor(colorframe, grayframe, CV_BGR2GRAY);

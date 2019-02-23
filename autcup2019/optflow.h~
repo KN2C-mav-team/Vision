@@ -55,7 +55,7 @@ signals:
     //Quad_Board *transmiter;
 
 public slots:
-    void timerEvent(cv::Mat raw_image);
+    void timerEvent(Mat raw_image);
 };
 
 #endif // OPTFLOW_H

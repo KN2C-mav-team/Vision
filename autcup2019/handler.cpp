@@ -132,7 +132,7 @@ void Handler::on_trackbar(int value, void *)
 
 }
 
-void Handler::imageCallback(Mat frame)
+void Handler::imageCallback(cv::Mat frame)
 {
 
     uDetector->setCroped(false);
