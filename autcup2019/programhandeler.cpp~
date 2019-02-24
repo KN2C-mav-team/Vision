@@ -122,7 +122,7 @@ void ProgramHandeler::takeNewDirections(){
     quad_current_direction = qr_data;
 }
 
-void ProgramHandeler::imageCallBack(Mat raw_image){
+void ProgramHandeler::imageCallBack(cv::Mat raw_image){
 
     qDebug()<<"PH Thread"<<QThread::currentThreadId();
 

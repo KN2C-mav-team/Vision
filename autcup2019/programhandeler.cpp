@@ -128,6 +128,13 @@ void ProgramHandeler::imageCallBack(cv::Mat raw_image){
 
     // imshow("ph",raw_image);
     time.start();
+
+    Point2f raw_cent(raw_image.cols/2.0F, raw_image.rows/2.0F);
+    Mat rot_mat = getRotationMatrix2D(raw_cent, -90, 1.0);
+
+    warpAffine(raw_image, raw_image, rot_mat, raw_image.size());
+
+
     Mat white_threshold ;
     white_threshold = raw_image.clone();
 //    raw_image.copyTo(white_threshold);

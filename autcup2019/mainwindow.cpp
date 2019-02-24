@@ -3,16 +3,16 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent)  
 {
 
-    camera.moveToThread(&cam_thread);
-    opt.moveToThread(&opt_thread);
+//    camera.moveToThread(&cam_thread);
+//    opt.moveToThread(&opt_thread);
     gh.moveToThread(&h_thread);
     ph.moveToThread(&ph_thread);  
     QR.moveToThread(&qr_thread);
     line.moveToThread(&line_thread);
-    robot.moveToThread(&robot_thread);
+//    robot.moveToThread(&robot_thread);
 
 
     qRegisterMetaType< cv::Mat >("cv::Mat");
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&timer,SIGNAL(timeout()),&camera,SLOT(downFrame_ready()));
     connect(&camera,SIGNAL(down_image_line(cv::Mat)),&ph,SLOT(imageCallBack(cv::Mat)));
     connect(&camera,SIGNAL(front_image(cv::Mat)),&gh,SLOT(imageCallback(cv::Mat)));
-    connect(&camera,SIGNAL(down_image(cv::Mat)),&QR,SLOT(imageCallback(cv::Mat)));
+    connect(&camera,SIGNAL(down_image_QR(cv::Mat)),&QR,SLOT(imageCallback(cv::Mat)));
     connect(&camera,SIGNAL(down_image(cv::Mat)),&opt,SLOT(timerEvent(cv::Mat)));
     connect(&cam_thread, SIGNAL (started()), this, SLOT (process())); 
     connect(&QR,SIGNAL(QR_signal(string,string,std::vector<cv::Point>,int)),&ph,SLOT(Callback(string,string,std::vector<cv::Point>,int)));
@@ -33,10 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
     h_thread.start();
     qr_thread.start();
     ph_thread.start();
- qDebug()<<"MW_T"<<QThread::currentThreadId();
-    cam_thread.start();
-    opt_thread.start();
-    robot_thread.start();
+    qDebug()<<"MW_T"<<QThread::currentThreadId();
+ //   cam_thread.start();
+ //   opt_thread.start();
+ //   robot_thread.start();
     timer.start(2);
 
 }
