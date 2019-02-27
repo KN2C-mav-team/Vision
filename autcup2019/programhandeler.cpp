@@ -6,7 +6,7 @@ ProgramHandeler::ProgramHandeler(QObject *parent) : QObject(parent){
     quad_current_direction = QUAD_STARTING_DIRECTION;
     lock_qr = false;
     detected_qr = false;
-    lock_points = false;   
+    lock_points = false;
     optical_flow_lock = false;
     rotation_initiated = false;
     straight_lock = false;
@@ -14,7 +14,7 @@ ProgramHandeler::ProgramHandeler(QObject *parent) : QObject(parent){
     epsilon = 5;
     erode_factor = STARTING_ERODE;
     dilate_factor = STARTING_DILATE;
-    max_L = MAX_SCALAR;min_L = 170;
+    max_L = MAX_SCALAR;min_L = 90;
     max_H = MAX_SCALAR;min_H = 0;
     max_S = MAX_SCALAR;min_S = 0;
     black_max_L = MAX_SCALAR;black_min_L = 172;
@@ -124,48 +124,44 @@ void ProgramHandeler::takeNewDirections(){
 
 void ProgramHandeler::imageCallBack(cv::Mat raw_image){
 
-    qDebug()<<"PH Thread"<<QThread::currentThreadId();
+    //    qDebug()<<"PH Thread"<<QThread::currentThreadId();
 
-    // imshow("ph",raw_image);
+
     time.start();
+
+    image_center.x = raw_image.cols/2;
+    image_center.y = raw_image.rows;
 
     Point2f raw_cent(raw_image.cols/2.0F, raw_image.rows/2.0F);
     Mat rot_mat = getRotationMatrix2D(raw_cent, -90, 1.0);
-
     warpAffine(raw_image, raw_image, rot_mat, raw_image.size());
 
+    //    transpose(raw_image, raw_image);
+    //    flip(raw_image, raw_image, +1);
 
     Mat white_threshold ;
     white_threshold = raw_image.clone();
-//    raw_image.copyTo(white_threshold);
     Mat contoursOfWhite,wholeContoursOfWhite;
     Mat final_approx;
 
-    image_center.x = raw_image.cols/2;
-    image_center.y = raw_image.rows/2;
 
     whiteThsOut(white_threshold);
-
-    //just for test
-
     contoursOfWhite = white_threshold.clone();
     wholeContoursOfWhite = findWhiteContours(contoursOfWhite);
     final_approx = contoursOfWhite.clone();
     makeOneLine(final_approx);
-    //makeOneLine2(final_drawing);
+
 #ifdef DEBUG
     imshow(WINDOW,raw_image);
-    //    imshow("contoursOfWhite",contoursOfWhite);
-    //    imshow("black_contours",black_drawing);
     imshow("Final Approx",final_approx);
     imshow("white_threshold",white_threshold);
     imshow("wholeContersOfWhite",wholeContoursOfWhite);
 #endif
-#ifdef LOG
+#ifdef DELAY
     qDebug()<<"delay time : "<<time.elapsed();
 #endif
 
-   // waitKey(3);
+    // waitKey(3);
 
 }
 
@@ -180,7 +176,9 @@ Mat ProgramHandeler::findWhiteContours(Mat &white_input){
 #ifdef DEBUG
     Mat drawing = Mat::zeros(white_input.size(),CV_8UC3);
 #endif
+#ifndef DEBUG
     Mat drawing ;
+#endif
     Mat final_drawing = Mat::zeros(white_input.size(),CV_8UC3);
     findContours(white_input, contours, hierarchy,
                  CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
@@ -240,7 +238,8 @@ void ProgramHandeler::makeOneLine(Mat &oneLineInput){
 #endif
     if(approx.size()>0){
         Point col;
-        col = handleFinalPoints(approx[0]);
+        // col = handleFinalPoints(approx[0]);
+        col = eq.findMeanPoint(final_found_points);
         if(col.x<10000 && col.x > -10 &&
                 col.y<10000 && col.y > -10){
 #ifdef DEBUG
@@ -252,11 +251,12 @@ void ProgramHandeler::makeOneLine(Mat &oneLineInput){
             } else {
                 dist =-eq.point_length(image_center, col);
             }
-            if(!onlyOnePointDetected){
-                setAngel(approx[0][0],approx[0][1]);
-            } else {
-                ang = 0;
-            }
+            setAngel(image_center,col);
+            //            if(!onlyOnePointDetected){
+            //                setAngel(approx[0][0],approx[0][1]);
+            //            } else {
+            //                ang = 0;
+            //            }
 #ifdef LOG
             qDebug()<<"polar distance from center"<<dist<<"px";
             qDebug()<<"arc-tan of detected line"<< ang << "degrees";
@@ -280,7 +280,7 @@ void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i>
 
                 if((approx[i].size() < 9 && checkRect(approx[i]))
                         /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
-                                                                                                                                      blackHierarchy) */){
+                                                                                                                                                                                      blackHierarchy) */){
 #ifdef DEBUG
                     for(int j=0;j<4;j++){
                         circle(drawing,approx[i][j],4,Scalar(MAX_SCALAR,MAX_SCALAR,0),-1,3);
@@ -317,40 +317,6 @@ bool ProgramHandeler::checkRect(vector<Point> input){
 
 }
 
-bool ProgramHandeler::isInsideBlackArea(vector<Point> points, Mat &blackDr,
-                                        vector<vector<Point> > &blackCn,
-                                        vector<Vec4i> &blackHi){
-    if(points.size() != 4){
-        return false;
-    }
-    LineEquations eq;
-    Point center = eq.findMeanPoint(points);
-
-    for(int i=0;i<blackCn.size();i++){
-        for(int i=0;i<4;i++){
-            circle(blackDr,points[i],5,Scalar(MAX_SCALAR,0,0),-1,2);
-        }
-        if( pointPolygonTest(blackCn[i],center,false) == 1){
-            drawContours(blackDr,
-                         blackCn,i,Scalar(0,0,MAX_SCALAR),1,8,blackHi,0,Point());
-            circle(blackDr,image_center,5,Scalar(0,0,100),-1,3);
-            if( contourArea(blackCn[i]) < 12000 ){
-                // qDebug()<<"unwanted contour with area"<<contourArea(blackCn[i]);
-                return false;
-            } else {
-                qDebug()<<"wanted contour with area"<<contourArea(blackCn[i]);
-            }
-        }
-        if( pointPolygonTest(blackCn[i],image_center,false) == 1){
-            drawContours(blackDr,
-                         blackCn,i,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),1,8,blackHi,0,Point());
-            circle(blackDr,image_center,5,Scalar(0,100,100),-1,3);
-            // qDebug()<<"center contour area"<<contourArea(blackCn[i]);
-        }
-    }
-    return true;
-}
-
 void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<Point> &points){
 
     if(!detected_qr){//straigh forward
@@ -367,7 +333,7 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
                 onlyOnePointDetected = true;
             } else {
                 onlyOnePointDetected = false;
-            }    
+            }
             //straight_lock = true;
         } else {
             LineEquations eq;
@@ -407,56 +373,62 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
         string qr_dir = findDirection();
         if(qr_dir == "right"){
             if(detectedLinesOf("right",points)){
-                selectRightAndDownPoints(points);
-                setAngel(points[0],points[1]);
-                if((!reachedTargetPoint(rotationTarget))){
-                    lock_qr = true;
+                if(RightAndDownPointsIsValid(points)){
+                    selectRightAndDownPoints(points);
+                    setAngel(points[0],points[1]);
+                    if((!reachedTargetPoint(rotationTarget))){
+                        lock_qr = true;
 #ifdef DEBUG
-                    circle(comp_drawing,Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y + RIGHT_Y_OFFSET),
-                           10,Scalar(MAX_SCALAR,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET),
-                           10,Scalar(0,MAX_SCALAR,0),3,5);
+                        circle(comp_drawing,Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y + RIGHT_Y_OFFSET),
+                               10,Scalar(MAX_SCALAR,0,0),3,5);
+                        circle(comp_drawing,Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET),
+                               10,Scalar(0,MAX_SCALAR,0),3,5);
 #endif
-                } else {
-                    //take the new direction
-                    takeNewDirections();
-                    rotation_initiated = false;
-                    lock_qr = false;
+                    } else {
+                        //take the new direction
+                        takeNewDirections();
+                        rotation_initiated = false;
+                        lock_qr = false;
+                    }
+#ifdef DEBUG
+                    connectPoints(comp_drawing, points);
+#endif
+                    final_found_points.push_back(points[0]);
+                    final_found_points.push_back(points.back());
+                    connectPoints(fin_drawing, final_found_points);
                 }
-#ifdef DEBUG
-                connectPoints(comp_drawing, points);
-#endif
-                final_found_points.push_back(points[0]);
-                final_found_points.push_back(points.back());
-                connectPoints(fin_drawing, final_found_points);
             }
 
         }
 
         if(qr_dir == "left"){
             if(detectedLinesOf("left",points)){
-                selectLeftAndDownPoints(points);
-                setAngel(points[0],points[1]);
-                if((!reachedTargetPoint(rotationTarget)) ){
-                    lock_qr = true;
+                if(LeftAndDownPointsIsValid(points)){
+                    selectLeftAndDownPoints(points);
+                    setAngel(points[0],points[1]);
+                    if((!reachedTargetPoint(rotationTarget)) ){
+                        lock_qr = true;
 #ifdef DEBUG
-                    circle(comp_drawing,Point(rotationTarget.x + LEFT_X_OFFSET, rotationTarget.y + LEFT_Y_OFFSET),
-                           10,Scalar(MAX_SCALAR,0,0),3,5);
-                    circle(comp_drawing,Point(rotationBase.x + BASE_LEFT_X_OFFSET,rotationBase.y + BASE_LEFT_Y_OFFSET),
-                           10,Scalar(0,MAX_SCALAR,0),3,5);
+                        circle(comp_drawing,Point(rotationTarget.x + LEFT_X_OFFSET,
+                                                  rotationTarget.y + LEFT_Y_OFFSET),
+                               10,Scalar(MAX_SCALAR,0,0),3,5);
+                        circle(comp_drawing,Point(rotationBase.x + BASE_LEFT_X_OFFSET,
+                                                  rotationBase.y + BASE_LEFT_Y_OFFSET),
+                               10,Scalar(0,MAX_SCALAR,0),3,5);
 #endif
-                } else {
-                    //take the new direction
-                    takeNewDirections();
-                    rotation_initiated = false;
-                    lock_qr = false;
+                    } else {
+                        //take the new direction
+                        takeNewDirections();
+                        rotation_initiated = false;
+                        lock_qr = false;
+                    }
+#ifdef DEBUG
+                    connectPoints(comp_drawing, points);
+#endif
+                    final_found_points.push_back(points[0]);
+                    final_found_points.push_back(points.back());
+                    connectPoints(fin_drawing, final_found_points);
                 }
-#ifdef DEBUG
-                connectPoints(comp_drawing, points);
-#endif
-                final_found_points.push_back(points[0]);
-                final_found_points.push_back(points.back());
-                connectPoints(fin_drawing, final_found_points);
             }
         }
 
@@ -519,7 +491,8 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
                 farRightPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(Point(farRightPoint.x + RIGHT_X_OFFSET , farRightPoint.y));
+        selectedRotationPoints.push_back(Point(farRightPoint.x +
+                                               RIGHT_X_OFFSET , farRightPoint.y));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -528,20 +501,34 @@ void ProgramHandeler::selectRightAndDownPoints(vector<Point> &points){
         vector<Point>finalSelected;
         finalSelected.clear();
         for(int i=0;i<points.size();i++){
-            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x + RIGHT_X_OFFSET ,points[i].y)) < 45){
+            if(eq.point_length(selectedRotationPoints[1],Point(points[i].x +
+                                                               RIGHT_X_OFFSET ,points[i].y)) < 45){
                 rotationTarget = points[i];
             }
             if(eq.point_length(selectedRotationPoints[0],
-                               Point(points[i].x + BASE_RIGHT_X_OFFSET ,points[i].y + BASE_RIGHT_Y_OFFSET)) < 45){
+                               Point(points[i].x + BASE_RIGHT_X_OFFSET ,points[i].y +
+                                     BASE_RIGHT_Y_OFFSET)) < 45){
                 rotationBase = points[i];
             }
         }
         selectedRotationPoints[1] = Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y);
-        selectedRotationPoints[0] = Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET);
+        selectedRotationPoints[0] = Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y +
+                                          BASE_RIGHT_Y_OFFSET);
         points.clear();
         points.push_back(Point(rotationTarget.x + RIGHT_X_OFFSET, rotationTarget.y));
-        points.push_back(Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y + BASE_RIGHT_Y_OFFSET));
+        points.push_back(Point(rotationBase.x + BASE_RIGHT_X_OFFSET,rotationBase.y +
+                               BASE_RIGHT_Y_OFFSET));
     }
+}
+
+bool ProgramHandeler::RightAndDownPointsIsValid(const vector<Point> points){
+    vector<Point> testPoints = points;
+    selectRightAndDownPoints(testPoints);
+    if(testPoints[0].y > testPoints[1].y){
+        return false;
+    }
+    return true;
+
 }
 
 void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
@@ -549,13 +536,15 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
         Point farLeftPoint;
         farLeftPoint = points[0];
         selectedRotationPoints.clear();
-        selectedRotationPoints.push_back(Point(points[0].x + BASE_LEFT_X_OFFSET , points[0].y + BASE_LEFT_Y_OFFSET));
+        selectedRotationPoints.push_back(Point(points[0].x + BASE_LEFT_X_OFFSET ,
+                                         points[0].y + BASE_LEFT_Y_OFFSET));
         for(int i=1;i<points.size();i++){
             if( points[i].x < farLeftPoint .x)  {
                 farLeftPoint = points[i];
             }
         }
-        selectedRotationPoints.push_back(Point(farLeftPoint.x + LEFT_X_OFFSET , farLeftPoint.y + LEFT_Y_OFFSET));
+        selectedRotationPoints.push_back(Point(farLeftPoint.x + LEFT_X_OFFSET ,
+                                               farLeftPoint.y + LEFT_Y_OFFSET));
         points = selectedRotationPoints;
         rotation_initiated = true;
         return;
@@ -581,13 +570,23 @@ void ProgramHandeler::selectLeftAndDownPoints(vector<Point> &points){
     }
 }
 
+bool ProgramHandeler::LeftAndDownPointsIsValid(const vector<Point> points){
+    vector<Point> testPoints = points;
+    selectLeftAndDownPoints(testPoints);
+    if(testPoints[0].y > testPoints[1].y){
+        return false;
+    }
+    return true;
+
+}
+
 void ProgramHandeler:: selectUpAndDownPoints(vector<Point> &points){
 
     vector<Point> selected;
     selected.clear();
     selected.push_back(points[0]);
     for(int i=1;i<points.size();i++){
-        if( (points[i].x <= points[0].x + 50) && (points[i].x >= points[0].x - 50) ) {
+        if( (points[i].x <= points[0].x + 95) && (points[i].x >= points[0].x - 95) ) {
             selected.push_back(points[i]);
         }
     }
@@ -614,7 +613,6 @@ void ProgramHandeler::whiteThsOut(Mat &whtInput)
     handleBlurs(whtInput);
     cvtColor(whtInput,whtInput,CV_BGR2HLS);
     inRange(whtInput,Scalar(min_H,min_L,min_S),Scalar(max_H,max_L,max_S),whtInput);
-
 }
 
 
@@ -625,12 +623,6 @@ void ProgramHandeler::blackThsOut(Mat &blkInput){
     cvtColor(blkInput,blkInput,CV_BGR2HLS);
     inRange(blkInput,Scalar(black_min_H,black_min_L,black_min_S),
             Scalar(black_max_H,black_max_L,black_max_S),blkInput);
-}
-
-void ProgramHandeler::publish(const double dist,const double ang){
-
-    emit connectorPkg(dist,ang);
-
 }
 
 void ProgramHandeler::setAngel(Point p0,Point p1){
@@ -655,11 +647,12 @@ void ProgramHandeler::Callback(const string type , const string data, const vect
             }
             LineEquations eq;
             qr_center = eq.findMeanPoint(qr_rect);
-            // cout<<"connector node says : qr type = "<< msg -> type<<endl;
-            //            cout<<"connector node says : qr data = "<< qr_data <<endl;
+#ifdef SAY_QR_DATA
+            cout<<"connector node says : qr type = "<< type <<endl;
+            cout<<"connector node says : qr data = "<< data <<endl;
             //            cout<<"current direction : "<<quad_current_direction <<endl;
             //            cout<<"next direction : "<<findDirection()<<endl;
-
+#endif
         } else {
             detected_qr = false;
 
@@ -695,5 +688,8 @@ void ProgramHandeler::sortByY(vector<Point> &points){
     }
 }
 
+void ProgramHandeler::publish(const double dist,const double ang){
 
+    emit connectorPkg(dist,ang);
 
+}

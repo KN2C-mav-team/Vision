@@ -229,7 +229,7 @@ ColorDetection::Colors Handler::findFirstGate(Mat frame)
     ROI.width = frame.cols;
     ROI.height = frame.rows/2;
 
-   
+
    /* qDebug()<<"Y rows = "<<yellow.rows;
     qDebug()<<"R rows = "<<red.rows;
 

@@ -2,15 +2,16 @@
 #define QUAD_BOARD_H
 
 #include <QObject>
-//#include <QtExtSerialPort/qextserialport.h>
-#include <qextserialport.h>
+#include "includes.h"
+//#include "qextserialport.h"
+//#include <qextserialport.h>
 #include "qdebug.h"
-#include <includes.h>
 
 
 #define _DEV_SERIAL            "/dev/ttySAC0"
 //"/dev/ttyUSB0"
 //#define MPC_BUFF_AMOUNT  11
+//#define SE_EXT
 
 
 class Quad_Board : public QObject
@@ -54,7 +55,7 @@ public:
     QByteArray data_send;
     uchar Num;
     uchar check_Sum;
-    QextSerialPort *serial_port;
+    //QextSerialPort *serial_port;
     ch2int conv;
   //  void window_CB(const serial_handler::WinMsg &msg);
     int load[6]={0,0,0,0,0,0};
@@ -62,7 +63,6 @@ public:
 public slots:
     void readData();
     void lineSerial_CB(double dist, double angle);
-    void gateSerial_CB(int movement);
     void optFlow_CB(int delta_x , int delta_y);
 
 

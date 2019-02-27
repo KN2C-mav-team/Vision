@@ -1,7 +1,0 @@
-#include "capture"
-
-frontCamera::frontCamera(QObject *parent) : QObject(parent)
-{
-
-}
-

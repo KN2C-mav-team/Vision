@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QTime>
 #include <math.h>
-//#include <QObject>
+#include <QObject>
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -18,10 +18,13 @@
 #include <programhandeler.h>
 #include "inverter.h"
 #include "lineEquations.h"
+#include "colordetection.h"
+#include "udetection.h"
+#include "handler.h"
+#include <QThread>
 #include <qr_reciever.h>
 #include <optflow.h>
 #include <quad_board.h>
-#include <handler.h>
 
 
 

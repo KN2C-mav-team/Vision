@@ -5,6 +5,7 @@
 Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
 {
         QString portName = QLatin1String(_DEV_SERIAL);
+#ifdef SE_EXT
         serial_port =  new QextSerialPort(QString(portName), QextSerialPort::EventDriven);
         serial_port->close();
         serial_port->setPortName(_DEV_SERIAL);
@@ -21,7 +22,7 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
         serial_port->setRts(0);
 
         serial_port->flush();
-
+#endif
 
 
     ready = false;
@@ -30,6 +31,7 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
     j=0;
     integer_received_counter = 0;
     Num = 0;
+#ifdef SE_EXT
        if( serial_port->isOpen())
         {
             qDebug("Serial Port Opened  .");
@@ -41,6 +43,7 @@ Quad_Board::Quad_Board(QObject *parent) : QObject(parent)
 
         }
      connect(serial_port, SIGNAL(readyRead()), this, SLOT(readData()));
+#endif
 }
 
 Quad_Board::~Quad_Board()
@@ -156,9 +159,11 @@ void Quad_Board::Fill_Data(uchar num,...)
 void Quad_Board::Send_Data()
 {
     data_send.append((~(check_Sum) + 1));
+#ifdef SE_EXT
     serial_port->write(data_send);
-    //qDebug()<<data_send.toHex();
+    qDebug()<<data_send.toHex();
    serial_port->flush();
+#endif
 
 }
 
@@ -170,16 +175,7 @@ void Quad_Board::lineSerial_CB(double dist, double angle)
     load[3]=int(dist);
     load[4]=int(angle);
   //  load[5]=dist.direction;
-
-}
-
-void Quad_Board::gateSerial_CB(int movement)
-{
-    load[5]=movement;
-    //-1 down
-    // 0 stay
-    // 1 up
-
+   
 }
 
 /*void Quad_Board::window_CB(const serial_handler::WinMsg &msg)
@@ -194,28 +190,29 @@ void Quad_Board::gateSerial_CB(int movement)
 
 void Quad_Board::optFlow_CB(int delta_x, int delta_y)
 {
+   // qDebug()<<"serial Thread"<<thread()->currentThreadId();
    // qDebug()<<"optical!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! = "<<msg.delta_x;
     load[0]=delta_x;
     load[1]=delta_y;
 // qDebug()<<load[2]<<" "<<load[3]<<" "<<load[4]<<" "<<load[5]<<endl;
-    qDebug()<<"Sending Data";
-    qDebug()<<"serial Thread"<<thread()->currentThreadId();
-    Fill_Data(6,load[0],load[1],load[2],load[3],load[4],load[5]);
+Fill_Data(5,load[0],load[1],load[2],load[3],load[4]);
 
 }
 void Quad_Board::readData()
 {
-     QByteArray _data = serial_port->readAll();
+#ifdef SE_EXT
+     //QByteArray _data = serial_port->readAll();
     unsigned char a;
 
-    //qDebug() << "read*";
-    //printf("read\n");
+    qDebug() << "read*";
+    printf("read\n");
 
         for (int i=0;i<_data.size();i++)
         {
             a=_data.at(i) ;
             Mpc_decode(a);
         }
+#endif
 
 
 }

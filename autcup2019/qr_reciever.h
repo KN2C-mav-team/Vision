@@ -4,6 +4,8 @@
 #include <QObject>
 #include <includes.h>
 
+//#define SAY_DATA
+
 class qr_reciever : public QObject
 {
     Q_OBJECT

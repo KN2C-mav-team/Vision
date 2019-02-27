@@ -5,6 +5,7 @@
 #include <capture.h>
 #include <QTimer>
 #include <includes.h>
+
 //#include <QThread.h>
 
 Q_DECLARE_METATYPE(cv::Mat)
@@ -33,7 +34,7 @@ public:
     QThread qr_thread;
     QThread ph_thread;
     QThread opt_thread;
-    QThread robot_thread; 
+    QThread robot_thread;
 public slots:
 
 void process();

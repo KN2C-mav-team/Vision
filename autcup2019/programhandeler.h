@@ -4,9 +4,9 @@
 #include <QObject>
 
 #include "includes.h"
-//#include "LineEquations.h"   
+//#include "LineEquations.h"
 #define MINIMUM_RECTANGLE_AREA 200
-#define MAXIMUM_RECTANGLE_AREA 1800
+#define MAXIMUM_RECTANGLE_AREA 2800
 #define QUAD_STARTING_DIRECTION "N"
 #define MAX_SCALAR 255
 #define MAX_EPSILON 20
@@ -32,11 +32,12 @@
 #define BASE_RIGHT_X_OFFSET -55
 #define BASE_RIGHT_Y_OFFSET -60
 
-//#define DEBUG
+#define DEBUG
 //#define HIER_EN
-//#define SAY_QR_DATA
+#define SAY_QR_DATA
 
 #define LOG
+//#define DELAY
 
 using namespace cv;
 using namespace std;
@@ -74,6 +75,8 @@ private:
                            vector<vector<Point> >& , vector<Vec4i>& );
     bool reachedTargetPoint(const Point target);
     bool detectedLinesOf(string , const vector<Point>);
+    bool RightAndDownPointsIsValid(const vector<Point>);
+    bool LeftAndDownPointsIsValid(const vector<Point>);
     string findDirection();
     Mat findWhiteContours(Mat &);
     Point handleFinalPoints(vector<Point>&);
@@ -124,5 +127,4 @@ public slots:
 };
 
 #endif // PROGRAMHANDELER_H
-
 

@@ -21,7 +21,7 @@ using namespace cv;
 
 class capture : public QObject
 {
-    Q_OBJECT  
+    Q_OBJECT
 public:
     explicit capture(QObject *parent = 0);
 
@@ -40,7 +40,7 @@ signals:
     void front_image(cv::Mat );
     void down_image(cv::Mat );
     void down_image_line(cv::Mat );
-    void down_image_qr(Mat );
+    void down_image_qr(cv::Mat );
 
 public slots:
     void frontFrame_ready();
