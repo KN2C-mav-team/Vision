@@ -13,7 +13,6 @@ public:
     explicit qr_reciever(QObject *parent = 0);
 
 
-
 private:
 
     void decoder(Mat &);

@@ -58,11 +58,11 @@ public:
     //QextSerialPort *serial_port;
     ch2int conv;
   //  void window_CB(const serial_handler::WinMsg &msg);
-    int load[6]={0,0,0,0,0,0};
+    int load[8]={0,0,0,0,0,0,0,0};
 
 public slots:
     void readData();
-    void lineSerial_CB(double dist, double angle);
+    void lineSerial_CB(double dist, double angle, int qrf);
     void optFlow_CB(int delta_x , int delta_y);
 
 

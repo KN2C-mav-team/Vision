@@ -37,7 +37,7 @@ void qr_reciever::decoder(Mat &input){
             string type = symbol->get_type_name();
             string data = symbol->get_data();
 #ifdef SAY_DATA
-            cout<<"Type : "<<type<<endl;
+         //   cout<<"Type : "<<type<<endl;
             cout<<"Data : "<<data<<endl;
 #endif
             for(int i=0;i<symbol->get_location_size();i++){

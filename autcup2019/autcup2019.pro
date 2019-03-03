@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     quad_board.cpp \
     colordetection.cpp \
     handler.cpp \
-    udetection.cpp
+    udetection.cpp \
+    hdetection.cpp
 
 HEADERS  += mainwindow.h \
     capture.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     quad_board.h \
     colordetection.h \
     handler.h \
-    udetection.h
+    udetection.h \
+    hdetection.h
 
 
 LIBS += `pkg-config opencv --libs`

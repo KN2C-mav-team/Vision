@@ -43,7 +43,7 @@ Handler::Handler(QObject *parent) : QObject(parent)
     up_down =0;
     detector =new ColorDetection();
     uDetector = new UDetection();
-    uDetector->setUp_down(1);
+    uDetector->setUp_down(0);
     //timer = new QTimer();
     makeTrackbar();
     connect(this,SIGNAL(_SIGNAL_reduceNoise()),this,SLOT(reduceNoise()));
@@ -132,7 +132,7 @@ void Handler::on_trackbar(int value, void *)
 
 }
 
-void Handler::imageCallback(cv::Mat frame)
+void Handler::imageCallback(Mat frame)
 {
 
     uDetector->setCroped(false);
@@ -140,8 +140,8 @@ void Handler::imageCallback(cv::Mat frame)
     bool yellow_found=false;
     int a=clock();
     //qDebug("frame recieved");
-    if(frame.empty())
-        qDebug("EMPPPTY");
+    //if(frame.empty())
+    //    qDebug("EMPPPTY");
     raw_frame = frame;
 
     //raw_frame=image;
@@ -158,58 +158,71 @@ void Handler::imageCallback(cv::Mat frame)
     ColorDetection::Colors tag=ColorDetection::YELLOW;
 
 
+    bool changed=false;
     if(!red.empty() || !yellow.empty() ){
         tag = findFirstGate(raw_frame);
         if( tag ==ColorDetection::RED){
-            qDebug("RED");
+           // qDebug("RED");
             uDetector->setColor_tag(ColorDetection::RED);
             red_found = uDetector->detectU_shapes(red);
 
         }
         else if( tag ==ColorDetection::YELLOW){
-            qDebug("YELLOW");
+           // qDebug("YELLOW");
             uDetector->setColor_tag(ColorDetection::YELLOW);
             yellow_found =uDetector->detectU_shapes(yellow);
         }
 
         if(tag ==ColorDetection::RED && !red_found ){
             tag = ColorDetection::YELLOW;
-            qDebug("YELLOW");
+           // qDebug("YELLOW");
             uDetector->setColor_tag(ColorDetection::YELLOW);
             yellow_found =uDetector->detectU_shapes(yellow);
         }
         else if(tag ==ColorDetection::YELLOW && !yellow_found ){
             tag = ColorDetection::RED;
-            qDebug("RED");
+           // qDebug("RED");
             uDetector->setColor_tag(ColorDetection::RED);
             yellow_found =uDetector->detectU_shapes(red);
 
         }
 
 
-
         if(red_found){
+            if(up_down == 0)
+                changed =true;
             up_down = 1;
             uDetector->setUp_down(1);
             emit gateCallBack(1);
+
             qDebug("-----------  RED GATE FOUND :)  --------------");
+
+
         }
         else if(yellow_found){
+            if(up_down == 1)
+                changed =true;
             up_down = 0;
             uDetector->setUp_down(0);
-            emit gateCallBack(-1);
+            emit gateCallBack(0);
             qDebug("-----------  YELLOW GATE FOUND :)  --------------");
         }
         else{
-            emit gateCallBack(0);
+            emit gateCallBack(up_down);
             qDebug("-----------  GATE NOT FOUND :(  --------------");
         }
 
     }
     else{
-        emit gateCallBack(1);
+        emit gateCallBack(up_down);
         qDebug("-----------  GATE NOT FOUND :(  --------------");
     }
+    /*if(changed){
+        int a1=clock();
+        wait(0.5);
+        int b1=clock();
+        qDebug()<<"WAIT FOR : "<<(b1-a1)/double(CLOCKS_PER_SEC)*1000 <<"mili SECONDS";
+    }*/
     int b=clock();
 
     // qDebug()<<"DELAY"<<(b-a1)/double(CLOCKS_PER_SEC)*1000 ;
@@ -229,7 +242,6 @@ ColorDetection::Colors Handler::findFirstGate(Mat frame)
     ROI.width = frame.cols;
     ROI.height = frame.rows/2;
 
-
    /* qDebug()<<"Y rows = "<<yellow.rows;
     qDebug()<<"R rows = "<<red.rows;
 
@@ -247,7 +259,7 @@ ColorDetection::Colors Handler::findFirstGate(Mat frame)
     qDebug()<<"ROI Y = "<<ROI.y
   */          ;
     if(!red.empty() && !yellow.empty()){
-        qDebug()<<"Both NOT Empty";
+       // qDebug()<<"Both NOT Empty";
 
         int y_count= countNonZero(yellow);
         int r_count= countNonZero(red);
@@ -286,7 +298,7 @@ ColorDetection::Colors Handler::chooseColor(Rect ROI,int y)
 {
 
 
-    qDebug()<<"In Choose Color";
+    //qDebug()<<"In Choose Color";
     vector<Point> Y_white_points;
     vector<Point> R_white_points;
 
@@ -295,8 +307,8 @@ ColorDetection::Colors Handler::chooseColor(Rect ROI,int y)
     Mat R_croped_frame =red(ROI);
     int y_count= countNonZero(Y_croped_frame);
     int r_count= countNonZero(R_croped_frame);
-    qDebug()<<"Y count "<<y_count;
-    qDebug()<<"R count "<<r_count;
+    //qDebug()<<"Y count "<<y_count;
+    //qDebug()<<"R count "<<r_count;
     if(y_count >0)
         findNonZero(Y_croped_frame,Y_white_points);
     if(r_count >0)
@@ -317,8 +329,6 @@ ColorDetection::Colors Handler::chooseColor(Rect ROI,int y)
 
 ColorDetection::Colors Handler::compareContoursColor(vector<Point> red_c, vector<Point> yellow_c)
 {
-    //wait to go up or down 2 second
-
 
     vector<Point> p_red,p_yellow;
     approxPolyDP(Mat(red_c),p_red,8,true);

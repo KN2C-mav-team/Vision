@@ -167,14 +167,15 @@ void Quad_Board::Send_Data()
 
 }
 
-void Quad_Board::lineSerial_CB(double dist, double angle)
+void Quad_Board::lineSerial_CB(double dist, double angle, int qrf)
 {
 //
    // ROS_WARN("line running %d",dist.dx);
     load[2]=18;
     load[3]=int(dist);
     load[4]=int(angle);
-  //  load[5]=dist.direction;
+    load[8] = qrf;
+    //qDebug()<<"qrf:"<<qrf;
    
 }
 

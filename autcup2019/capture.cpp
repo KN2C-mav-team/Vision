@@ -3,7 +3,8 @@
 capture::capture(QObject *parent) : QObject(parent)
 {
 
-    down_cam.open("/home/danial/Webcam/2019-02-27-000859.webm");
+    down_cam.open("/home/danial/Webcam/logs/10.webm");
+//    down_cam.open(DOWN_CAM_NUM);
     if( down_cam.isOpened() )
     {
         down_cam.set(CV_CAP_PROP_FPS, DOWN_FPS);
@@ -53,6 +54,7 @@ void capture::downFrame_ready()
     Mat l;
     down_cam >> down_frame ;
     l = down_frame.clone();
+    resize(l,l,Size(320,240));
     //imshow("down frame",down_frame);
   //  emit down_image(down_frame);
     emit down_image_line(l);
