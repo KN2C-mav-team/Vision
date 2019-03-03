@@ -18,14 +18,11 @@
 #include <programhandeler.h>
 #include "inverter.h"
 #include "lineEquations.h"
-#include "colordetection.h"
-#include "udetection.h"
-#include "handler.h"
-#include "hdetection.h"
-#include <QThread>
 #include <qr_reciever.h>
 #include <optflow.h>
 #include <quad_board.h>
+#include <handler.h>
+#include <hdetection.h>
 
 
 

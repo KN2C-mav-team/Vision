@@ -21,14 +21,14 @@ HDetection::HDetection(QObject *parent) : QObject(parent)
     //img= imread("/home/kimia/Desktop/FIRA_Pix/H4.jpg" );
     //resize(img,img,Size(640,480));
 
-    namedWindow("Blue Detection",WINDOW_NORMAL);
+ /*   namedWindow("Blue Detection",WINDOW_NORMAL);
 
     createTrackbar("H1 :","Blue Detection",&Y_H11,179,on_trackbar);
     createTrackbar("S1 :","Blue Detection",&Y_S11,255,on_trackbar);
     createTrackbar("V1 :","Blue Detection",&Y_V11,255,on_trackbar);
     createTrackbar("H2 :","Blue Detection",&Y_H21,179,on_trackbar);
     createTrackbar("S2 :","Blue Detection",&Y_S21,255,on_trackbar);
-    createTrackbar("V2 :","Blue Detection",&Y_V21,255,on_trackbar);
+    createTrackbar("V2 :","Blue Detection",&Y_V21,255,on_trackbar);*/
     on_trackbar(0,0);
 }
 
@@ -39,7 +39,7 @@ void HDetection::on_trackbar(int, void *)
 
 void HDetection::hLandingCallBack(cv::Mat img)
 {
-    qDebug("here");
+   // qDebug("here");
     bool found=false;
 
     Mat hsv,out;
@@ -47,7 +47,7 @@ void HDetection::hLandingCallBack(cv::Mat img)
     cvtColor(img,hsv,CV_BGR2HSV);
 
     inRange(hsv,Scalar(Y_H11,Y_S11,Y_V11),Scalar(Y_H21,Y_S21,Y_V21),out);//blue
-    imshow("blue",out);
+ //   imshow("blue",out);
     Mat threshold_output;
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -100,7 +100,8 @@ qDebug("after slop2");
 
 double HDetection::getSlope(Point p1,Point p2){
 
-
+    
     return (p2.y - p1.y) / (double)(p2.x - p1.x);
 
 }
+

@@ -56,8 +56,11 @@ void OptFlow::OptFlow_LK()
                 delta_y += (p1.y - p2.y);
             }
         }
+qDebug()<<"Before division 1";
         delta_x /= (Features_counter);
+qDebug()<<"After division1";
         delta_y /= (Features_counter);
+qDebug()<<"Afetr division2";
 
 
         points[1].resize(Features_counter);

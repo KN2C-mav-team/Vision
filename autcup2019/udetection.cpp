@@ -37,6 +37,7 @@ vector<Point> UDetection::getRed_contour() const
     return red_contour;
 }
 
+
 void UDetection::setColor_tag(const ColorDetection::Colors &value)
 {
     color_tag = value;
@@ -77,7 +78,7 @@ vector<Vec4i> UDetection::detectLines(Mat src)
 
     HoughLinesP(canny, lines, 8 , CV_PI/180,80, 50, 100  );//50,50,10  //threshold =180
     cvtColor(frame,frame,CV_GRAY2BGR);
-    qDebug()<<"HOUGH LINE SIZE :"<<lines.size();
+    //qDebug()<<"HOUGH LINE SIZE :"<<lines.size();
     //hasIntersection(lines,frame);
     for( size_t i = 0; i < lines.size(); i++ )
     {
@@ -100,7 +101,7 @@ vector<Vec4i> UDetection::detectLines(Mat src)
     }
     //namedWindow("RAW LINES",CV_WINDOW_NORMAL);
     //imshow("RAW LINES",frame);
-    qDebug()<<"*** LINE SIZE : "<<lines_prim.size()<<"***";
+    //qDebug()<<"*** LINE SIZE : "<<lines_prim.size()<<"***";
     return lines_prim;
 
 }
@@ -208,7 +209,7 @@ bool UDetection::isSlopeEqual(Point start_pt1, Point end_pt1, Point start_pt2, P
     if(delta_x3 ==0 && delta_x2 ==0 && delta_x1==0)
         return true;
 
-    qDebug()<<"m1 : "<<m1<<" m2 : "<<m2<<" m3 : "<<m3;
+    //qDebug()<<"m1 : "<<m1<<" m2 : "<<m2<<" m3 : "<<m3;
     return abs(m1-m2)<3 && abs(m3-m2)<3;
 }
 
@@ -306,7 +307,7 @@ bool UDetection::hasIntersectionWithOthers(Point p, vector<Vec4i> lines, int ind
 {
     bool found=false;
     int distance = findMaxLength(lines);
-   // qDebug()<<"MAX DISTANCE : "<<distance;
+    //qDebug()<<"MAX DISTANCE : "<<distance;
     for(int k=0;k<lines.size() ; k++){
         if(k!=index1 & k!=index2)
             if( isVertical(lines[k]))
@@ -319,14 +320,14 @@ bool UDetection::hasIntersectionWithOthers(Point p, vector<Vec4i> lines, int ind
                      & abs(lines[k][0]-lines[index2][0]) > distance - 60){
 
 
-                   // qDebug()<<"DISTANCE 1 = "<<abs(lines[k][0]-lines[index2][0]);
+                    //qDebug()<<"DISTANCE 1 = "<<abs(lines[k][0]-lines[index2][0]);
                     circle(rgb,Point((lines[k][2]+lines[index2][2])/2,(lines[k][3]+lines[k][1])/2),10,Scalar(0,255,255),5);
                     found =true;
                 }
                 else if  ( isSlopeEqual(lines[index1],lines[k]) //XOR (not equal both)
                            & !isSlopeEqual(lines[index2],lines[k])
                            & abs(lines[k][0]-lines[index1][0]) > distance - 60) {
-                  //  qDebug()<<"DISTANCE 2 = "<<abs(lines[k][0]-lines[index1][0]);
+                    //qDebug()<<"DISTANCE 2 = "<<abs(lines[k][0]-lines[index1][0]);
                     circle(rgb,Point((lines[k][2]+lines[index1][2])/2,(lines[k][3]+lines[k][1])/2),10,Scalar(0,255,255),5);
                     found =true;
                 }
@@ -345,7 +346,7 @@ bool UDetection::hasIntersectionWithOthers(Point p, vector<Vec4i> lines, int ind
                 line(rgb,p,Point(lines[k][2],lines[k][3]),color,LINE_THICKNESS);
 
 
-             //   qDebug("HAS INTERSECTION WITH OTHERS");
+                //qDebug("HAS INTERSECTION WITH OTHERS");
                 return true;
             }
             else if( hasIntersectionPoints(p,Point(lines[k][2],lines[k][3]))){
@@ -356,7 +357,7 @@ bool UDetection::hasIntersectionWithOthers(Point p, vector<Vec4i> lines, int ind
                 line(rgb,p,Point(lines[k][0],lines[k][1]),color,LINE_THICKNESS);
 
 
-                qDebug("HAS INTERSECTION WITH OTHERS");
+               // qDebug("HAS INTERSECTION WITH OTHERS");
                 return true;
             }
         }
@@ -368,7 +369,7 @@ bool UDetection::hasIntersectionWithOthers(Point p, vector<Vec4i> lines, int ind
 
 bool UDetection::detectBoundedRects(Mat src)
 {
-   // qDebug()<<"IN BOUNDING RECT DETECTION";
+    //qDebug()<<"IN BOUNDING RECT DETECTION";
     Mat input =src.clone(),output;
     Mat threshold_output;
     vector<vector<Point> > contours;
@@ -399,14 +400,14 @@ bool UDetection::detectBoundedRects(Mat src)
 
        // qDebug()<<"CONTOUR SIZE : "<<contours_poly[i].size();
 
-//       qDebug()<<"CONTOUR AREA : "<<contourArea(contours[i]);
+       // qDebug()<<"CONTOUR AREA : "<<contourArea(contours[i]);
 
         if( contours_poly[i].size()==8 /*&&
                                                                                                                                                     isContourConvex(contours_poly[i])*/){
             if(contourArea(contours[i]) > BODY_AREA){
 
 
-          //     qDebug("8 VERTEX ");
+              //  qDebug("8 VERTEX ");
 
 
                 if(isU(contours_poly[i])){
@@ -499,7 +500,7 @@ bool UDetection::detecGate(Mat src)
     for( int i = 0; i < contours.size(); i++ )
     {
 
-       // qDebug()<<"contour area : "<<contourArea(contours[i]);
+        //qDebug()<<"contour area : "<<contourArea(contours[i]);
         if(contourArea(contours[i]) > (croped ? BODY_AREA/2 :BODY_AREA) ){
 
             approxPolyDP( Mat(contours[i]), contours_poly[i], 8, true );
@@ -526,22 +527,22 @@ bool UDetection::detecGate(Mat src)
 
             //whole gate check
             Point p=findCenterPoint(contours_poly[i]);
-           // circle(output,p,10,Scalar(45,145,45),20);
-           // imshow("Bounding Rect ",output);
+            circle(output,p,10,Scalar(45,145,45),20);
+            //imshow("Bounding Rect ",output);
             if( poly_size==8 ){
 
-               /* for(int l=0; l<contours_poly[i].size();l++)
+                for(int l=0; l<contours_poly[i].size();l++)
                 {
                     circle(output,contours_poly[i][l],10,Scalar(255,0,0),20);
-                }*/
+                }
                // qDebug("8 VERTEX ");
 
                 if(isU(contours_poly[i])){
 
                     foundU =true;
 
-                   // qDebug("U DETECTION FIRST ALGO");
-                   // imshow("Bounding Rect ",output);
+                  //  qDebug("U DETECTION FIRST ALGO");
+                    //imshow("Bounding Rect ",output);
                     if(color_tag==ColorDetection::RED)
                         red_contour =contours[i];
                     else
@@ -556,7 +557,7 @@ bool UDetection::detecGate(Mat src)
 
                     foundU =true;
 
-                    //qDebug("U DETECTION SECOND ALGO");
+                   // qDebug("U DETECTION SECOND ALGO");
                     //imshow("Bounding Rect ",output);
                     if(color_tag==ColorDetection::RED)
                         red_contour =contours[i];
@@ -574,8 +575,8 @@ bool UDetection::detecGate(Mat src)
 
                     foundU =true;
 
-                   // qDebug("U detection SECOND ALGO");
-                   // imshow("Bounding Rect ",output);
+                    //qDebug("U detection SECOND ALGO");
+                    //imshow("Bounding Rect ",output);
                     if(color_tag==ColorDetection::RED)
                         red_contour =contours[i];
                     else
@@ -591,7 +592,7 @@ bool UDetection::detecGate(Mat src)
             if(contourArea(contours[i]) > (croped ? BODY_AREA2/2 :BODY_AREA2)
                     && (poly_size ==4 || poly_size == 6)){
 
-              //  qDebug()<<"IN EDGE DETECTION ";
+               // qDebug()<<"IN EDGE DETECTION ";
 
                // qDebug()<<"updown "<<up_down;
                 int MAX_Y=240;
@@ -600,10 +601,10 @@ bool UDetection::detecGate(Mat src)
                     MAX_Y=120;
 
 
-                qDebug()<<"min y = "<<MIN_Y;
+               // qDebug()<<"min y = "<<MIN_Y;
                 for(int l=0; l < poly_size ; l++){
                     Point p=contours_poly[i][l];
-                   // circle(output,p,10,Scalar(255,0,0),5);
+                    circle(output,p,10,Scalar(255,0,0),5);
                     //qDebug()<<" EDGE : P.X = "<<p.x<<"P.Y = "<<p.y;
                     if(abs(p.x-320)<DELTA_EDGE ||  abs(p.x-0)<DELTA_EDGE){
                         x_edge_counter++;
@@ -616,7 +617,7 @@ bool UDetection::detecGate(Mat src)
                     if(abs(p.y- MAX_Y)<DELTA_EDGE || abs(p.y-MIN_Y)<DELTA_EDGE){
                         y_edge_counter++;
 
-                       // circle(output,p,10,Scalar(255,0,0),5);
+                        circle(output,p,10,Scalar(255,0,0),5);
                     }
 
                     if(x_edge_counter >4  || y_edge_counter >4)
@@ -625,7 +626,7 @@ bool UDetection::detecGate(Mat src)
 
                 }
 
-               // qDebug()<<"X COUTER : "<<x_edge_counter<<" ---- Y COUNTER : "<<y_edge_counter;
+                //qDebug()<<"X COUTER : "<<x_edge_counter<<" ---- Y COUNTER : "<<y_edge_counter;
 
                 if(x_edge_counter == 4  || y_edge_counter==4
 
@@ -651,7 +652,7 @@ bool UDetection::detecGate(Mat src)
             }
         }
     }
-   // imshow("EDGES ",output);
+    //imshow("EDGES ",output);
     return false;
 
 
@@ -693,16 +694,16 @@ bool UDetection::detectEdges(Mat src)
 
         approxPolyDP( Mat(contours[i]), contours_poly[i], 8, true );
 
-         drawContours(output,contours,i,color,3);
+        // drawContours(output,contours,i,color,3);
         color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
 
         int poly_size= contours_poly[i].size();
-      //  qDebug()<<"CONTOUR SIZE"<<poly_size;
+       // qDebug()<<"CONTOUR SIZE"<<poly_size;
 
-      //  qDebug()<<"contour area : "<<contourArea(contours[i]);
+       // qDebug()<<"contour area : "<<contourArea(contours[i]);
         if(contourArea(contours[i]) > BODY_AREA2
                 && (poly_size ==4 || poly_size == 6)){
-            drawContours(output,contours,i,color,5);
+            //drawContours(output,contours,i,color,5);
 
             //if( contours_poly[i].size()==4 &&
             for(int l=0; l<contours_poly[i].size();l++){
@@ -725,10 +726,10 @@ bool UDetection::detectEdges(Mat src)
                 if(x_edge_counter == 4  || y_edge_counter==4
                         || (x_edge_counter == 2  && y_edge_counter==2)){
 
-                  //  qDebug("8 VERTEX and CONVEX");
-                  //  circle(output,p,3,color,-4);
+                   // qDebug("8 VERTEX and CONVEX");
+                    //circle(output,p,3,color,-4);
 
-                  //  imshow("EDGES ",output);
+                    //imshow("EDGES ",output);
                     return true;
 
 

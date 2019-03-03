@@ -4,15 +4,13 @@ ProgramHandeler::ProgramHandeler(QObject *parent) : QObject(parent){
 
     //intial this
     quad_current_direction = QUAD_STARTING_DIRECTION;
-    queued_mission = STARTING_QUEUED_MISSION;
-    mission_counter = 0;
     lock_qr = false;
     detected_qr = false;
     lock_points = false;
     optical_flow_lock = false;
     rotation_initiated = false;
     straight_lock = false;
-    mission = 0;
+    mission = 0;   
     qr_flag = -3;
     //next_mission = 0;
     onlyOnePointDetected = false;
@@ -303,7 +301,7 @@ void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i>
 
                 if((approx[i].size() < 5 && checkRect(approx[i]))
                         /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
-                                                                                                                                                                                                                                                                                                                                                                              blackHierarchy) */){
+                                                                                                                                                                                                                                                                                                                                                                      blackHierarchy) */){
 #ifdef DEBUG
                     for(int j=0;j<4;j++){
                         circle(drawing,approx[i][j],4,Scalar(MAX_SCALAR,MAX_SCALAR,0),-1,3);
@@ -687,20 +685,20 @@ void ProgramHandeler::setAngel(Point p0,Point p1){
     ang = qAtan( (delta_x) / (delta_y) ) * 180/M_PI;
 }
 
-void ProgramHandeler::Callback(const string type , const string data,
-                               const vector<Point> locations, int detected){
+void ProgramHandeler::Callback(const string type , const string data, const vector<Point> locations, int detected){
     if(!lock_qr){
         if(detected != 0){
-            next_mission = data.at(8);
-            if(((int)next_mission-48) == queued_mission ){
-                mission_counter += 2;
-                queued_mission ++;
-
-            }
             detected_qr = true;
-            // qr_data = data;
-            //qr_data = qr_data.substr(0,1 );
-            qr_data = data.at(mission_counter);
+            qr_data = data;
+            next_mission = data.substr(8,9);
+            //            if(next_mission == "1"){
+            //                qr_data = qr_data.substr(6,5);
+            //            } else {
+            //                qr_data = qr_data.substr(0,1 );
+            //            }
+            qr_data = qr_data.substr(0,1 );
+            qDebug()<<"mission"<<mission;
+            cout << "my next mission : "<< next_mission << endl;
             qr_rect.clear();
             for(int i=0;i<locations.size();i++){
                 Point p;
@@ -711,9 +709,8 @@ void ProgramHandeler::Callback(const string type , const string data,
             LineEquations eq;
             qr_center = eq.findMeanPoint(qr_rect);
 #ifdef SAY_QR_DATA
-            cout << "(int)next_mission-48 : "<< (int)next_mission - 48 << endl;
-            cout << "queued_mission : "<< queued_mission << endl;
             cout << "my qr_data : "<< qr_data << endl;
+            cout << "connector node says : qr type = "<< type <<endl;
             cout << "connector node says : qr data = "<< data <<endl;
             //            cout<<"current direction : "<<quad_current_direction <<endl;
             //            cout<<"next direction : "<<findDirection()<<endl;
@@ -783,3 +780,4 @@ void ProgramHandeler::gateStatusCallBack(int movement){
     }
 
 }
+

@@ -11,7 +11,7 @@ int Y_V2;
 int X_S1;
 int X_V1;
 int X_S2;
-int X_V2;
+int X_V2;   
 int X_S11;
 int X_V11;
 int X_S21;
@@ -19,9 +19,9 @@ int X_V21;
 
 
 int erosion_elem = 0;
-int erosion_size = 0;
 int dilation_elem = 0;
 int dilation_size = 0;
+int erosion_size =0;
 int const max_elem = 2;
 int const max_kernel_size = 21;
 
@@ -38,18 +38,20 @@ struct myclassY {
 Handler::Handler(QObject *parent) : QObject(parent)
 {
 
-    erosion_size=3;
-    dilation_size=3;
+    erosion_size=4;//3
+    dilation_size=1;//3
     up_down =0;
     detector =new ColorDetection();
     uDetector = new UDetection();
     uDetector->setUp_down(0);
+    tag =ColorDetection::WHITE;
+    uDetector->setColor_tag(ColorDetection::WHITE);
     //timer = new QTimer();
     makeTrackbar();
     connect(this,SIGNAL(_SIGNAL_reduceNoise()),this,SLOT(reduceNoise()));
     connect(this,SIGNAL(_SIGNAL_detectYellowRedFrame()),this,SLOT(detectYellowRedFrame()));
 
-
+    //image=imread("/home/kimia/Desktop/FIRA_Pix/front_cap.avi");
     //image=imread("/home/kimia/Desktop/FIRA_Pix/fira.jpg");
     //resize(image,image,Size(320,240));
 
@@ -58,6 +60,7 @@ Handler::Handler(QObject *parent) : QObject(parent)
 
     //timer->start(2);
 }
+
 
 void Handler::makeTrackbar()
 {
@@ -69,12 +72,12 @@ void Handler::makeTrackbar()
     Y_S2=255;
     Y_V2=255;
 
-    X_S1 =100;
-    X_V1 =65;
+    X_S1 =88;//100
+    X_V1 =0;//65
     X_S2 =255;
     X_V2 =255;
-    X_S11=100;
-    X_V11=100;
+    X_S11=0;//100
+    X_V11=0;//100
     X_S21=255;
     X_V21=255;
 
@@ -118,8 +121,8 @@ void Handler::makeTrackbar()
 
     createTrackbar( "Dilation Kernel size:\n 2n +1", "Filter Demo",
                     &dilation_size, max_kernel_size,
-                    Dilation );
-*/
+                    Dilation );*/
+
     /// Default start
     Erosion( 0, 0 );
     Dilation( 0, 0 );
@@ -134,6 +137,9 @@ void Handler::on_trackbar(int value, void *)
 
 void Handler::imageCallback(Mat frame)
 {
+
+
+    //fileLogger.open("/home/odroid/autcup_final_logger/logs/uDetectionLog.txt",ios::app);
 
     uDetector->setCroped(false);
     bool red_found=false;
@@ -155,7 +161,7 @@ void Handler::imageCallback(Mat frame)
 
     int a1=clock();
 
-    ColorDetection::Colors tag=ColorDetection::YELLOW;
+
 
 
     bool changed=false;
@@ -194,7 +200,6 @@ void Handler::imageCallback(Mat frame)
             up_down = 1;
             uDetector->setUp_down(1);
             emit gateCallBack(1);
-
             qDebug("-----------  RED GATE FOUND :)  --------------");
 
 
@@ -228,6 +233,9 @@ void Handler::imageCallback(Mat frame)
     // qDebug()<<"DELAY"<<(b-a1)/double(CLOCKS_PER_SEC)*1000 ;
     qDebug()<<"TOTAL DELAY : "<<((b-a)/double(CLOCKS_PER_SEC))*1000  ;
     //imshow("LIVE",raw_frame);
+
+
+
 }
 
 
@@ -391,9 +399,9 @@ void Handler::detectYellowRedFrame()
     red &= red_backproj; //and backprojection with mask
     yellow &=yellow_backproj;
 
-    //imshow("YELLOW",yellow);
+ //   imshow("YELLOW",yellow);
 
-    //imshow("RED",red);
+   // imshow("RED",red);
 
 
     int b=clock();
@@ -420,7 +428,7 @@ void Handler::reduceNoise()
                                          Point( dilation_size, dilation_size ) );
         /// Apply the dilation operation
         dilate( yellow, yellow, element );
-        //imshow( "Filter Demo", yellow );
+       // imshow( "Filter Demo", yellow );
     }
     if(!red.empty()){
         Mat element = getStructuringElement( erosion_type,
@@ -436,7 +444,7 @@ void Handler::reduceNoise()
                                          Point( dilation_size, dilation_size ) );
         /// Apply the dilation operation
         dilate( red, red, element );
-        //imshow( "Filter Demo RED", red );
+       // imshow( "Filter Demo RED", red );
     }
 }
 
@@ -466,3 +474,4 @@ void Handler::wait(int seconds)
     while (clock() < endwait) {}
 
 }
+

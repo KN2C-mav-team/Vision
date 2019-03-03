@@ -19,14 +19,15 @@
 
 using namespace cv;
 
-class capture : public QObject
+class capture : public QObject  
 {
-    Q_OBJECT
+    Q_OBJECT  
 public:
     explicit capture(QObject *parent = 0);
 
     VideoCapture front_cam,down_cam;//,test_cam;
-
+    VideoWriter front_video;
+    VideoWriter down_video;
     Mat front_frame;
     //Mat test_frame;
     Mat down_frame;
@@ -38,6 +39,7 @@ public:
 signals:
 
     void front_image(cv::Mat );
+    void down_image_land(cv::Mat );
     void down_image(cv::Mat );
     void down_image_line(cv::Mat );
     void down_image_qr(cv::Mat );
@@ -49,3 +51,4 @@ public slots:
 };
 
 #endif // CAPTURE_H
+

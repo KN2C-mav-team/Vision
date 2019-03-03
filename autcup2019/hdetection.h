@@ -2,10 +2,8 @@
 #define HDETECTION_H
 #include <opencv2/opencv.hpp>
 #include <QObject>
-#include <includes.h>
 #include <qdebug.h>
 using namespace cv;
-using namespace std;
 class HDetection : public QObject
 {
     Q_OBJECT
@@ -16,7 +14,7 @@ public:
     } myobject1;
 
 
-    explicit HDetection(QObject *parent = 0);
+    explicit HDetection(QObject *parent = nullptr);
 private :
     void detectH();
     void static on_trackbar( int, void* );

@@ -26,6 +26,8 @@ private:
     int up_down; //if 0 down
     ColorDetection *detector;
     UDetection *uDetector;
+
+    ColorDetection::Colors tag;
     //QTimer *timer;
     void makeTrackbar();
     ColorDetection::Colors compareContoursColor(vector<Point> red_c,vector<Point> yellow_c);
@@ -53,3 +55,4 @@ public slots:
 
 
 #endif // HANDLER_H
+

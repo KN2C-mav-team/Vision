@@ -44,3 +44,4 @@ void process();
 };
 
 #endif // MAINWINDOW_H
+
