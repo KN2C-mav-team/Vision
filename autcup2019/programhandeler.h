@@ -5,19 +5,20 @@
 
 #include "includes.h"
 //#include "LineEquations.h"
-//#define MINIMUM_RECTANGLE_AREA 200 
+//#define MINIMUM_RECTANGLE_AREA 200
 //#define MAXIMUM_RECTANGLE_AREA 2800
-#define QUAD_STARTING_DIRECTION "N"
+#define QUAD_STARTING_DIRECTION 'N'
+#define STARTING_QUEUED_MISSION 1
 #define MAX_SCALAR 255
 #define MAX_EPSILON 20
 #define MAX_ERODE 10
 #define MAX_DILATE 10
 #define STARTING_ERODE 0
 #define STARTING_DILATE 1
-#define NORTH "N"
-#define SOUTH "S"
-#define EAST "E"
-#define WEST "W"
+#define NORTH 'N'
+#define SOUTH 'S'
+#define EAST 'E'
+#define WEST 'W'
 #define FRAME_WIDTH 320
 #define FRAME_HEIGHT 240
 
@@ -75,7 +76,7 @@ private:
     void takeNewDirections();
     void setAngel(Point ,Point);
     void choosePoints(vector<vector<Point> >contours, vector<Vec4i>,
-                      vector<Point>&, Mat &);
+                      vector<Point>&, Mat &,Mat);
     void sortByY(vector<Point>&);
     void mergePointsByNearest(vector<Point>, vector<Point> &found_points);
     bool computeBlackArea(vector <Point> ,Mat );
@@ -86,6 +87,7 @@ private:
     bool detectedLinesOf(string , const vector<Point>);
     bool RightAndDownPointsIsValid(const vector<Point>);
     bool LeftAndDownPointsIsValid(const vector<Point>);
+    bool checkNonZeros(vector<Point>, Mat white_input);
     string findDirection();
     Mat findWhiteContours(Mat &);
     Point handleFinalPoints(vector<Point>&);
@@ -102,6 +104,11 @@ private:
     bool onlyOnePointDetected;
     bool rotate_clock_lock;
     bool lock_wanted_lines;
+
+    int mission_counter;
+    char next_mission;
+    int queued_mission;
+
     int qr_flag;
     int MAXIMUM_RECTANGLE_AREA;
     int MINIMUM_RECTANGLE_AREA;
@@ -109,7 +116,6 @@ private:
     int mission;
     int rotation_angle = -90;
     int old_rotation_angle = 0;
-    string next_mission;
     int dilate_factor;
     int max_L,min_L;
     int max_H,min_H;
@@ -121,10 +127,12 @@ private:
     int epsilon;
     double dist;
     double ang;
-    string qr_data;
+    char qr_data;
+    //string qr_data;
     string qr_dir;
     string old_qr_dir = "forward";
-    string quad_current_direction;
+    char quad_current_direction;
+    //string quad_current_direction;
     Point rotationTarget;
     Point rotationBase;
     Point straightBase;

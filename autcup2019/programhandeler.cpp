@@ -4,18 +4,20 @@ ProgramHandeler::ProgramHandeler(QObject *parent) : QObject(parent){
 
     //intial this
     quad_current_direction = QUAD_STARTING_DIRECTION;
+    queued_mission = STARTING_QUEUED_MISSION;
+    mission_counter = 0;
     lock_qr = false;
     detected_qr = false;
     lock_points = false;
     optical_flow_lock = false;
     rotation_initiated = false;
     straight_lock = false;
-    mission = 0;   
+    mission = 0;
     qr_flag = -3;
     //next_mission = 0;
     onlyOnePointDetected = false;
     MAXIMUM_RECTANGLE_AREA = 2800;
-    MINIMUM_RECTANGLE_AREA = 220;
+    MINIMUM_RECTANGLE_AREA = 250;
     epsilon = 5;
     erode_factor = STARTING_ERODE;
     dilate_factor = STARTING_DILATE;
@@ -198,7 +200,7 @@ Mat ProgramHandeler::findWhiteContours(Mat &white_input){
         drawContours(drawing,contours,i,Scalar(100,0,100),1,8,hierarchy,0,Point());
     }
 #endif
-    choosePoints(contours, hierarchy, found_points, drawing);
+    choosePoints(contours, hierarchy, found_points, drawing, white_input);
 
     if(found_points.size() > 0){
         sortByY(found_points);
@@ -288,28 +290,29 @@ void ProgramHandeler::makeOneLine(Mat &oneLineInput){
 }
 
 void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i> hierarchy,
-                                   vector<Point>&found_points, Mat &drawing){
+                                   vector<Point>&found_points, Mat &drawing,Mat white_input){
     LineEquations eq;
     vector<vector<Point> > approx;
     approx.resize(contours.size());
     for(int i=0;i < contours.size();i++){
-        if(hierarchy[i][2]<0){
-            if (contourArea(contours[i])<MAXIMUM_RECTANGLE_AREA
-                    && contourArea(contours[i])>MINIMUM_RECTANGLE_AREA ){
-                approxPolyDP(contours[i], approx[i], (double)epsilon, true);
-                sortByY(approx[i]);
+        // if(hierarchy[i][2]<0){
+        if (contourArea(contours[i])<MAXIMUM_RECTANGLE_AREA
+                && contourArea(contours[i])>MINIMUM_RECTANGLE_AREA
+                && checkNonZeros(contours[i],white_input)){
+            approxPolyDP(contours[i], approx[i], (double)epsilon, true);
+            sortByY(approx[i]);
 
-                if((approx[i].size() < 5 && checkRect(approx[i]))
-                        /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
-                                                                                                                                                                                                                                                                                                                                                                      blackHierarchy) */){
+            if((approx[i].size() < 5 && checkRect(approx[i]))
+                    /*&& isInsideBlackArea(approx[i] , black_drawing, blackContours,
+                                                                                                                                                                                                                                                                                                                                                                                                      blackHierarchy) */){
 #ifdef DEBUG
-                    for(int j=0;j<4;j++){
-                        circle(drawing,approx[i][j],4,Scalar(MAX_SCALAR,MAX_SCALAR,0),-1,3);
-                    }
-#endif
-                    mergePointsByNearest(approx[i],found_points);
+                for(int j=0;j<4;j++){
+                    circle(drawing,approx[i][j],4,Scalar(MAX_SCALAR,MAX_SCALAR,0),-1,3);
                 }
+#endif
+                mergePointsByNearest(approx[i],found_points);
             }
+            //   }
         }
     }
 #ifdef DEBUG
@@ -317,6 +320,18 @@ void ProgramHandeler::choosePoints(vector<vector<Point> >contours ,vector<Vec4i>
         circle(drawing,found_points[i],2,Scalar(MAX_SCALAR,MAX_SCALAR,MAX_SCALAR),CV_FILLED,8);
     }
 #endif
+}
+
+bool ProgramHandeler::checkNonZeros(vector<Point>points,Mat white_input){
+
+    LineEquations eq;
+    Point p = eq.findMeanPoint(points);
+    //qDebug()<<white_input.at<uchar>(p.y,p.x);
+    if(white_input.at<uchar>(p.y,p.x) == 0){
+        return false;
+    }
+    return true;
+
 }
 
 void ProgramHandeler::mergePointsByNearest(vector<Point>points,vector<Point>&found_points){
@@ -434,7 +449,9 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
             old_rotation_angle = rotation_angle;
             rotation_angle += 90;
             qr_flag = -1;
+#ifdef DEBUG
             qDebug()<<"here1";
+#endif
             takeNewDirections();
         }
 
@@ -442,8 +459,20 @@ void ProgramHandeler::handleRouting(Mat &comp_drawing, Mat &fin_drawing, vector<
             old_rotation_angle = rotation_angle;
             rotation_angle += -90;
             qr_flag = -2;
+#ifdef DEBUG
             qDebug()<<"here3";
+#endif
             takeNewDirections();
+        }
+
+        if(qr_dir == "backward"){
+            old_rotation_angle = rotation_angle;
+            rotation_angle += -180;
+            qr_flag = -4;
+            takeNewDirections();
+#ifdef DEBUG
+            qDebug()<<"here4";
+#endif
         }
         if(qr_dir == "forward"){
             selectedStraightPoints.clear();
@@ -685,20 +714,22 @@ void ProgramHandeler::setAngel(Point p0,Point p1){
     ang = qAtan( (delta_x) / (delta_y) ) * 180/M_PI;
 }
 
-void ProgramHandeler::Callback(const string type , const string data, const vector<Point> locations, int detected){
+void ProgramHandeler::Callback(const string type , const string data,
+                               const vector<Point> locations, int detected){
     if(!lock_qr){
         if(detected != 0){
+            next_mission = data.at(8);
+            if(((int)next_mission - 48) == queued_mission ){
+                mission_counter += 2;
+                queued_mission ++;
+
+            }
             detected_qr = true;
-            qr_data = data;
-            next_mission = data.substr(8,9);
-            //            if(next_mission == "1"){
-            //                qr_data = qr_data.substr(6,5);
-            //            } else {
-            //                qr_data = qr_data.substr(0,1 );
-            //            }
-            qr_data = qr_data.substr(0,1 );
-            qDebug()<<"mission"<<mission;
-            cout << "my next mission : "<< next_mission << endl;
+            if(mission_counter < 8){
+                qr_data = data.at(mission_counter);
+            } else {
+                qr_data = data.at(6);
+            }
             qr_rect.clear();
             for(int i=0;i<locations.size();i++){
                 Point p;
@@ -709,8 +740,10 @@ void ProgramHandeler::Callback(const string type , const string data, const vect
             LineEquations eq;
             qr_center = eq.findMeanPoint(qr_rect);
 #ifdef SAY_QR_DATA
+            cout << "(int)next_mission - 48 : "<< (int)next_mission - 48 << endl;
+            cout << "mission_counter : "<< (int)next_mission - 48 << endl;
+            cout << "queued_mission : "<< queued_mission << endl;
             cout << "my qr_data : "<< qr_data << endl;
-            cout << "connector node says : qr type = "<< type <<endl;
             cout << "connector node says : qr data = "<< data <<endl;
             //            cout<<"current direction : "<<quad_current_direction <<endl;
             //            cout<<"next direction : "<<findDirection()<<endl;
@@ -737,8 +770,7 @@ void ProgramHandeler::Callback(const string type , const string data, const vect
 void ProgramHandeler::sortByY(vector<Point> &points){
     int  j;
     Point key;
-    for (int i = 1; i < points.size(); i++)
-    {
+    for (int i = 1; i < points.size(); i++){
         key = points[i];
         j = i-1;
         while (j >= 0 && points[j].y > key.y)
